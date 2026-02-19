@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WPM Hero</title>
+</head>
+<body>
+    <h2>Test Text Display</h2>
+    <div class="settings-panel">
+        <form method="GET">
+            <label>Difficulty:</label>
+            <select name="difficulty" onchange="this.form.submit()">
+                <option value="easy" {% if test_text.difficulty == "easy" %}selected{% endif %}>Easy</option>
+                <option value="medium" {% if test_text.difficulty == "medium" %}selected{% endif %}>Medium</option>
+                <option value="hard" {% if test_text.difficulty == "hard" %}selected{% endif %}>Hard</option>
+            </select>
+        </form>
+    </div>
+
+    <div id="text-container" class="text-display">
+        {% for char in test_text.display_text %}
+            {{ char }}
+        {% endfor %}
+    </div>
+
+
+
+</body>
+</html>
