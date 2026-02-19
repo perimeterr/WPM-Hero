@@ -2,6 +2,18 @@
 <html>
 <head>
     <title>WPM Hero</title>
+    <style>
+        .text-display {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        #typing-box {
+            width: 100%;
+            height: 120px;
+            font-size: 20px;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
     <h2>Test Text Display</h2>
@@ -22,7 +34,9 @@
         {% endfor %}
     </div>
 
-
+    <hr>
+    <h3>Start Typing Below:</h3>
+    <textarea id="typing-box" placeholder="Start typing here..."></textarea>
 
 </body>
 </html>
