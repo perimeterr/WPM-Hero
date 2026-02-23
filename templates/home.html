@@ -38,5 +38,48 @@
     <h3>Start Typing Below:</h3>
     <textarea id="typing-box" placeholder="Start typing here..."></textarea>
 
+    <p>Time Remaining: <span id="time">60</span> seconds</p>
+
+    <button id="reset-btn">Reset</button>
+
+    <script>
+        const typingBox = document.getElementById("typing-box");
+        const timeDisplay = document.getElementById("time");
+        const resetBtn = document.getElementById("reset-btn");
+
+        let timeLeft = 60;
+        let timerStarted = false;
+        let countdown = null;
+
+        function startTimer() {
+            countdown = setInterval(function () {
+                timeLeft--;
+                timeDisplay.textContent = timeLeft;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    typingBox.disabled = true;
+                }
+
+            }, 1000);
+        }
+
+        typingBox.addEventListener("input", function () {
+            if (!timerStarted && typingBox.value.length > 0) {
+                timerStarted = true;
+                startTimer();
+            }
+        });
+
+        resetBtn.addEventListener("click", function () {
+            clearInterval(countdown);
+            timeLeft = 60;
+            timerStarted = false;
+            typingBox.disabled = false;
+            typingBox.value = "";
+            timeDisplay.textContent = timeLeft;
+        });
+    </script>
+
 </body>
 </html>
