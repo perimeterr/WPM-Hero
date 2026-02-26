@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     const textDisplayChars = document.querySelectorAll('.char');
     const typingInput = document.getElementById('typing-input');
+    const wordsPerMinuteDisplay = document.getElementById("wpm");
+    const accuracyDisplay = document.getElementById("accuracy");
+    const timeDisplay = document.getElementById("time");
 
     // Objects for tracking mistyped and correctly typed keys
     const mistypedKeys = {};
