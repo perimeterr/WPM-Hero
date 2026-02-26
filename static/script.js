@@ -44,25 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getWordsPerMinute() {
         const timeElapsedInMinutes = (Date.now() - testStartTime) / 60000;
-        const wordsTyped = charIncrementer / 5;
+        const wordsTyped = correctIndices.size / 5;
         return wordsTyped / timeElapsedInMinutes;
     }
 
     function resetWordsPerMinute() {
         wordsPerMinuteDisplay.textContent = 0;
     }
-
-    var charIncrementer = 0;
-    typingInput.addEventListener('keydown', (event) => {
-        let keyPressed = event.key;
-
-        if (keyPressed.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
-            charIncrementer++;
-        }
-
-        // for debugging, will be removed in iteration 2
-        console.log("press", charIncrementer);
-    })
 
     resetBtn.addEventListener("click", function () {
         clearInterval(countdown);
@@ -73,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timeDisplay.textContent = timeLeft;
         resetWordsPerMinute();
     });  
-    
+
     typingInput.addEventListener('input', () => {
         if (!timerStarted && typingInput.value.length > 0) {
             timerStarted = true;
