@@ -12,6 +12,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const mistakeIndices = new Set();
     const correctIndices = new Set();
 
+    let timeLeft = 60;
+    let timerStarted = false;
+    let countdown = null;
+    let testStartTime = null;
+
+    function startTimer() {
+        countdown = setInterval(function () {
+            timeLeft--;
+            timeDisplay.textContent = timeLeft;
+            wordsPerMinuteDisplay.textContent = getWordsPerMinute().toFixed(2);
+
+            if (timeLeft <= 0) {
+              clearInterval(countdown);
+              typingInput.disabled = true;
+            }
+
+        }, 1000);
+    }
+
     // function that computes the user's accuracy per key
     function getKeyAccuracy(key) {
         const correct = correctKeys[key] || 0;
@@ -23,7 +42,44 @@ document.addEventListener('DOMContentLoaded', () => {
         return (correct / total) * 100;
     }
 
+    function getWordsPerMinute() {
+        const timeElapsedInMinutes = (Date.now() - testStartTime) / 60000;
+        const wordsTyped = charIncrementer / 5;
+        return wordsTyped / timeElapsedInMinutes;
+    }
+
+    function resetWordsPerMinute() {
+        wordsPerMinuteDisplay.textContent = 0;
+    }
+
+    var charIncrementer = 0;
+    typingInput.addEventListener('keydown', (event) => {
+        let keyPressed = event.key;
+
+        if (keyPressed.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+            charIncrementer++;
+        }
+
+        // for debugging, will be removed in iteration 2
+        console.log("press", charIncrementer);
+    })
+
+    resetBtn.addEventListener("click", function () {
+        clearInterval(countdown);
+        timeLeft = 60;
+        timerStarted = false;
+        typingInput.disabled = false;
+        typingInput.value = "";
+        timeDisplay.textContent = timeLeft;
+        resetWordsPerMinute();
+    });  
+    
     typingInput.addEventListener('input', () => {
+        if (!timerStarted && typingInput.value.length > 0) {
+            timerStarted = true;
+            startTimer();
+            testStartTime = Date.now();
+        }
         const userValue = typingInput.value.split('');
         
         textDisplayChars.forEach((charSpan, index) => {
