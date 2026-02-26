@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const wordsPerMinuteDisplay = document.getElementById("wpm");
     const accuracyDisplay = document.getElementById("accuracy");
     const timeDisplay = document.getElementById("time");
+    const resetBtn = document.getElementById("reset-btn");
 
     // Objects for tracking mistyped and correctly typed keys
     const mistypedKeys = {};
