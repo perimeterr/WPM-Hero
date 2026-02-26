@@ -2,10 +2,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const textDisplayChars = document.querySelectorAll('.char');
     const typingInput = document.getElementById('typing-input');
 
-    // Object for tracking mistyped keys
+    // Objects for tracking mistyped and correctly typed keys
     const mistypedKeys = {};
-    // Track indices already counted as mistakes
+    const correctKeys = {};
+    // Track indices already counted as mistakes and correct keys
     const mistakeIndices = new Set();
+    const correctIndices = new Set();
+
+    // function that computes the user's accuracy per key
+    function getKeyAccuracy(key) {
+        const correct = correctKeys[key] || 0;
+        const mistakes = mistypedKeys[key] || 0;
+        const total = correct + mistakes;
+    
+        if (total === 0) return null;
+    
+        return (correct / total) * 100;
+    }
 
     typingInput.addEventListener('input', () => {
         const userValue = typingInput.value.split('');
@@ -20,6 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (userChar === targetChar) {
                 charSpan.style.color = 'green';
                 mistakeIndices.delete(index);
+
+                // Track correct keys once per position in sample text
+                if (!correctIndices.has(index)) {
+                    if (!correctKeys[targetChar]) {
+                        correctKeys[targetChar] = 0;
+                    }
+                    correctKeys[targetChar] += 1;
+                    correctIndices.add(index);
+                }
+
             } else {
                 charSpan.style.color = 'red';
 
@@ -34,7 +57,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        console.log(mistypedKeys); // For debugging
+        // for debugging, will be removed in iteration 2
+        console.log('Mistyped keys:', mistypedKeys); 
+        console.log('Correct keys:', correctKeys);
+
+        // Temporary test if accuracy works for letter 'a'
+        let accuracy = getKeyAccuracy('a');
+
+        if (accuracy === null) {
+            console.log('Accuracy for "a": N/A');
+        } else {
+            console.log('Accuracy for "a": ' + accuracy.toFixed(2) + '%');
+        }
     });
 });
 
