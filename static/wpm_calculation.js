@@ -4,7 +4,3 @@ export function getWordsPerMinute(correctKeysTyped, testStartTime) {
     const wpm = wordsTyped / timeElapsedInMinutes;
     return wpm;
 }
-
-export function resetWordsPerMinute() {
-    return 0;
-}
