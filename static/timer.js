@@ -13,7 +13,7 @@ export function updateTestStartTime() {
 
 export function setTimer(time) {
     timeLeft = time;
-    timerStarted = false;
+    setTimerStarted(false);
     clearInterval(countdown);
 }
 
@@ -35,11 +35,13 @@ export function startTimer(onTick, onComplete) {
     } else {
         setTimerStarted(true);
     }
+    updateTestStartTime();
     countdown = setInterval(function () {
         timeLeft--;
         onTick(timeLeft);
 
         if (timeLeft <= 0) {
+            setTimerStarted(false);
             clearInterval(countdown);
             onComplete();
         }
