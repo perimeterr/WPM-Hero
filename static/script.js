@@ -10,9 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const accuracyDisplay = document.getElementById("accuracy");
     const timeDisplay = document.getElementById("time");
     const resetBtn = document.getElementById("reset-btn");
+    const timer = document.getElementById("timer");
     
-    // Initialize timer
-    setTimer(60);
+    setTimer(timer.value);
     timeDisplay.textContent = getTimeLeft();
     accuracyDisplay.textContent = "100.00%";
     wordsPerMinuteDisplay.textContent = "0.00";
@@ -29,8 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
         accuracyDisplay.textContent = accuracy.toFixed(2) + '%';
     }
 
+    timer.addEventListener("change", () => {
+        setTimer(timer.value);
+        updateTimeDisplay(timer.value);
+    });
+
     resetBtn.addEventListener("click", function () {
-        setTimer(60);
+        setTimer(timer.value);
         setTimerStarted(false);
         typingInput.disabled = false;
         typingInput.value = "";
