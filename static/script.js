@@ -1,4 +1,4 @@
-import { getWordsPerMinute, resetWordsPerMinute } from './wpm_calculation.js';
+import { getWordsPerMinute } from './wpm_calculation.js';
 import { getCorrectIndicesSize, getRealTimeAccuracy, resetAccuracy } from './accuracy_calculation.js';
 import { getTestStartTime, getTimeLeft, setTimer, setTimerStarted, isTimerStarted, startTimer, updateTestStartTime } from './timer.js';
 import { validateCharacter, resetDisplayTextColor } from './character_validator.js';
@@ -42,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTimeDisplay(getTimeLeft());
         updateWPMDisplay(0);
         updateAccuracyDisplay(100);
-        resetWordsPerMinute();
         resetAccuracy();
         // Reset text colors
         resetDisplayTextColor(textDisplayChars);
@@ -50,8 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     typingInput.addEventListener('input', () => {
         if (!isTimerStarted() && typingInput.value.length > 0) {
-            setTimerStarted(true);
-            updateTestStartTime();
             startTimer( (timeLeft) => {
                     const wpm = getWordsPerMinute(getCorrectIndicesSize(), getTestStartTime());
                     const accuracy = getRealTimeAccuracy();
