@@ -30,6 +30,11 @@ export function isTimerStarted() {
 }
 
 export function startTimer(onTick, onComplete) {
+    if (isTimerStarted()) {
+        return;
+    } else {
+        setTimerStarted(true);
+    }
     countdown = setInterval(function () {
         timeLeft--;
         onTick(timeLeft);
