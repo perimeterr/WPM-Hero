@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="module" src="{% static 'script.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title>WPM Hero</title>
+</head>
+<body>
+    <h2>WPM Hero</h2>
+    <div class="settings-panel">
+        <form method="GET">
+            <label>Difficulty:</label>
+            <select name="difficulty" onchange="this.form.submit()">
+                <option value="easy" {% if test_text.difficulty == "easy" %}selected{% endif %}>Easy</option>
+                <option value="medium" {% if test_text.difficulty == "medium" %}selected{% endif %}>Medium</option>
+                <option value="hard" {% if test_text.difficulty == "hard" %}selected{% endif %}>Hard</option>
+            </select>
+            <select id="timer">
+                <option value="60">60</option>
+                <option value="30">30</option>
+                <option value="15">15</option>
+            </select>
+        </form>
+    </div>
+
+    <div id="text-content" class="text-display">
+        {% for char in test_text.display_text %}
+            <span class="char">{% if char == " " %}&nbsp;{% else %}{{ char }}{% endif %}</span>
+        {% endfor %}
+    </div>
+
+    <hr>
+    <h3>Start Typing Below:</h3>
+    <textarea id="typing-input" placeholder="Start typing here..."></textarea>
+
+    <div id="results" class="results-display">
+        <p>WPM: <span id="wpm">0</span></p>
+        <p>Accuracy: <span id="accuracy">0%</span></p>
+        <p>Time: <span id="time">0s</span></p>
+    </div>
+
+    <button id="reset-btn">Reset</button>
+
+</body>
+</html>

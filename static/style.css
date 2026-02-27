@@ -1,0 +1,16 @@
+.char{
+    display: inline-block;
+    letter-spacing: -5px;
+}
+.text-display{
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+#typing-input {
+    width: 100%;
+    height: 120px;
+    font-size: 20px;
+    padding: 10px;
+}
+
+
