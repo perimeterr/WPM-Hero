@@ -1,4 +1,4 @@
-import { validateCharacter } from "../static/character_validator";
+import { validateCharacter } from "../../static/character_validator";
 
 describe('Character Validator', () => {
     let displayElementChars;

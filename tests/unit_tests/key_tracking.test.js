@@ -4,7 +4,7 @@ import {
     removeMistakeIndex,
     getKeyAccuracy,
     resetAccuracy
-  } from '../static/accuracy_calculation.js';
+  } from '../../static/accuracy_calculation.js';
   
   
 beforeEach(() => {
