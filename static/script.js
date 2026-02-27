@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
             timeLeft--;
             timeDisplay.textContent = timeLeft;
             wordsPerMinuteDisplay.textContent = getWordsPerMinute().toFixed(2);
+            accuracyDisplay.textContent = getRealTimeAccuracy().toFixed(2);
 
             if (timeLeft <= 0) {
               clearInterval(countdown);
@@ -43,6 +44,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return (correct / total) * 100;
     }
 
+    function getRealTimeAccuracy() {
+        const totalTyped = Object.values(correctKeys).reduce((a, b) => a + b, 0) + Object.values(mistypedKeys).reduce((a, b) => a + b, 0);
+        const totalCorrect = Object.values(correctKeys).reduce((a, b) => a + b, 0);
+    
+        if (totalTyped === 0) return 100; // If nothing typed yet, accuracy is considered 100%
+    
+        return (totalCorrect / totalTyped) * 100;
+    }
+
+    function resetAccuracy() {
+        for (let key in mistypedKeys) {
+            mistypedKeys[key] = 0;
+        }
+        for (let key in correctKeys) {
+            correctKeys[key] = 0;
+        }
+        mistakeIndices.clear();
+        correctIndices.clear();
+        accuracyDisplay.textContent = "0%";
+    }
+
     function getWordsPerMinute() {
         const timeElapsedInMinutes = (Date.now() - testStartTime) / 60000;
         const wordsTyped = correctIndices.size / 5;
@@ -61,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         typingInput.value = "";
         timeDisplay.textContent = timeLeft;
         resetWordsPerMinute();
+        resetAccuracy();
     });  
 
     typingInput.addEventListener('input', () => {
