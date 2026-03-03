@@ -91,6 +91,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 () => {
                     typingInput.disabled = true;
+
+                    // get final wpm and accuracy when timer ends
+                    const finalWPM = getWordsPerMinute(
+                        getCorrectIndicesSize(),
+                        getTestStartTime()
+                    );
+                
+                    const finalAccuracy = getRealTimeAccuracy();
+
+                    localStorage.setItem('finalWPM', finalWPM.toFixed(2));
+                    localStorage.setItem('finalAccuracy', finalAccuracy.toFixed(2));
+
                     window.location.href = "/results/";
                 }
             );
