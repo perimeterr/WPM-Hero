@@ -11,15 +11,15 @@
     <div class="settings-panel">
         <form method="GET">
             <label>Difficulty:</label>
-            <select name="difficulty" onchange="this.form.submit()">
+            <select id="difficulty" name="difficulty" onchange="this.form.submit()">
                 <option value="easy" {% if test_text.difficulty == "easy" %}selected{% endif %}>Easy</option>
                 <option value="medium" {% if test_text.difficulty == "medium" %}selected{% endif %}>Medium</option>
                 <option value="hard" {% if test_text.difficulty == "hard" %}selected{% endif %}>Hard</option>
             </select>
-            <select id="timer">
-                <option value="60">60</option>
-                <option value="30">30</option>
-                <option value="15">15</option>
+            <select id="timer" name="timer" onchange="this.form.submit()">
+                <option value="60" {% if test_timer.selected_timer == "60" %}selected{% endif %}>60</option>
+                <option value="30" {% if test_timer.selected_timer == "30" %}selected{% endif %}>30</option>
+                <option value="15" {% if test_timer.selected_timer == "15" %}selected{% endif %}>15</option>
             </select>
         </form>
     </div>
@@ -39,8 +39,6 @@
         <p>Accuracy: <span id="accuracy">0%</span></p>
         <p>Time: <span id="time">0s</span></p>
     </div>
-
-    <button id="reset-btn">Reset</button>
 
 </body>
 </html>
