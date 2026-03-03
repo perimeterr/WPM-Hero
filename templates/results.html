@@ -9,6 +9,8 @@
 <body>
     <h1>Results Page</h1>
     <p>This is the results page.</p>
+    <p>WPM: <span id="wpm">0.00</span></p>
+    <p>Accuracy: <span id="accuracy">0.00%</span></p>
     <a href="{% url 'home:home' %}">Back to Home</a>
     <button id="replay-btn" onclick="window.location.href='{% url 'home:home' %}?difficulty={{ difficulty }}&replay=true'">Replay</button>
     <button id="new-test-btn" onclick="window.location.href='{% url 'home:home' %}'">New Test</button>
