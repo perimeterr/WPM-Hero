@@ -6,6 +6,8 @@ const mistakeIndices = new Set();
 const correctIndices = new Set();
 
 export function trackCorrectKey(key, index) {
+    if (key === " ") return;
+
     if (!correctIndices.has(index)) {
         if (!correctKeys[key]) {
             correctKeys[key] = 0;
@@ -16,6 +18,8 @@ export function trackCorrectKey(key, index) {
 }
 
 export function trackMistypedKey(key, index) {
+    if (key === " ") return;
+    
     if (!mistakeIndices.has(index)) {
         if (!mistypedKeys[key]) {
             mistypedKeys[key] = 0;  
