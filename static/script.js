@@ -1,6 +1,6 @@
 import { getWordsPerMinute } from './wpm_calculation.js';
 import { getCorrectIndicesSize, getRealTimeAccuracy, resetAccuracy } from './accuracy_calculation.js';
-import { getTestStartTime, getTimeLeft, setTimer, setTimerStarted, isTimerStarted, startTimer, updateTestStartTime } from './timer.js';
+import { getTestStartTime, getTimeLeft, setTimer, setTimerStarted, isTimerStarted, startTimer } from './timer.js';
 import { validateCharacter, resetDisplayTextColor } from './character_validator.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,13 +9,33 @@ document.addEventListener('DOMContentLoaded', () => {
     const wordsPerMinuteDisplay = document.getElementById("wpm");
     const accuracyDisplay = document.getElementById("accuracy");
     const timeDisplay = document.getElementById("time");
-    const resetBtn = document.getElementById("reset-btn");
     const timer = document.getElementById("timer");
+
+    function initializeTest() {
+        if (localStorage.getItem('clickedReplay') === 'true') {
+            const savedSettings = JSON.parse(localStorage.getItem('testSettings'));
+            if (savedSettings) {
+                document.getElementById('difficulty').value = savedSettings.difficulty;
+                timer.value = savedSettings.timer;
+                setTimer(timer.value);
+                timeDisplay.textContent = getTimeLeft();
+                accuracyDisplay.textContent = "100.00%";
+                wordsPerMinuteDisplay.textContent = "0.00";
+                
+                // Restore display text
+                textDisplayChars.forEach((char, index) => {
+                    char.textContent = savedSettings.displayText[index] || '';
+                });
+            }
+        } else {
+            resetTest();
+        }
+        setTimer(timer.value);
+        timeDisplay.textContent = getTimeLeft();
+        accuracyDisplay.textContent = "100.00%";
+        wordsPerMinuteDisplay.textContent = "0.00";
+    }
     
-    setTimer(timer.value);
-    timeDisplay.textContent = getTimeLeft();
-    accuracyDisplay.textContent = "100.00%";
-    wordsPerMinuteDisplay.textContent = "0.00";
     
     function updateTimeDisplay(time) {
         timeDisplay.textContent = time;
@@ -29,12 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         accuracyDisplay.textContent = accuracy.toFixed(2) + '%';
     }
 
-    timer.addEventListener("change", () => {
-        setTimer(timer.value);
-        updateTimeDisplay(timer.value);
-    });
-
-    resetBtn.addEventListener("click", function () {
+    function resetTest() {
         setTimer(timer.value);
         setTimerStarted(false);
         typingInput.disabled = false;
@@ -43,12 +58,30 @@ document.addEventListener('DOMContentLoaded', () => {
         updateWPMDisplay(0);
         updateAccuracyDisplay(100);
         resetAccuracy();
-        // Reset text colors
         resetDisplayTextColor(textDisplayChars);
-    });  
+    }
+    
+    function saveTestSettings() {
+        const settings = {
+            difficulty: document.getElementById('difficulty').value,
+            timer: timer.value,
+            displayText: Array.from(textDisplayChars).map(char => char.textContent).join('')
+        };
+        localStorage.setItem('testSettings', JSON.stringify(settings));
+    }
+
+    initializeTest();
+
+    timer.addEventListener("change", () => {
+        setTimer(timer.value);
+        updateTimeDisplay(timer.value);
+    }); 
+
+    
 
     typingInput.addEventListener('input', () => {
         if (!isTimerStarted() && typingInput.value.length > 0) {
+            saveTestSettings();
             startTimer( (timeLeft) => {
                     const wpm = getWordsPerMinute(getCorrectIndicesSize(), getTestStartTime());
                     const accuracy = getRealTimeAccuracy();
@@ -58,6 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 () => {
                     typingInput.disabled = true;
+                    window.location.href = "/results/";
                 }
             );
         }
