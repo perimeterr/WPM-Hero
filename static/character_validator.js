@@ -2,14 +2,22 @@ import { trackCorrectKey, trackMistypedKey, removeMistakeIndex } from "./accurac
 
 export function validateCharacter(displayElementChars, typingInput) {
     const userValue = typingInput.value.split('');
+    const currentIndex = userValue.length;
         
     displayElementChars.forEach((charSpan, index) => {
         const userChar = userValue[index];
         const targetChar = charSpan.textContent.replace(/\u00A0/g, " ");
 
+        charSpan.classList.remove('current');
+
         if (userChar == null) {
             charSpan.style.color = 'black';
             removeMistakeIndex(index);
+
+            if (index === currentIndex) {
+                charSpan.classList.add('current');
+            }
+            
         } else if (userChar === targetChar) {
             charSpan.style.color = 'green';
             removeMistakeIndex(index);
