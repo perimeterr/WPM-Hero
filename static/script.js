@@ -1,5 +1,5 @@
 import { getWordsPerMinute } from './wpm_calculation.js';
-import { getCorrectIndicesSize, getRealTimeAccuracy, resetAccuracy } from './accuracy_calculation.js';
+import { getCorrectIndicesSize, getRealTimeAccuracy, resetAccuracy, getMistypedKeys } from './accuracy_calculation.js';
 import { getTestStartTime, getTimeLeft, setTimer, setTimerStarted, isTimerStarted, startTimer } from './timer.js';
 import { validateCharacter, resetDisplayTextColor } from './character_validator.js';
 
@@ -100,8 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                     const finalAccuracy = getRealTimeAccuracy();
 
+                    const finalMistypedKeys = getMistypedKeys();
+
                     localStorage.setItem('finalWPM', finalWPM.toFixed(2));
                     localStorage.setItem('finalAccuracy', finalAccuracy.toFixed(2));
+                    localStorage.setItem('finalMistypedKeys', JSON.stringify(finalMistypedKeys));
 
                     window.location.href = "/results/";
                 }

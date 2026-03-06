@@ -59,6 +59,10 @@ export function getRealTimeAccuracy() {
     return accuracy;
 }
 
+export function getMistypedKeys() {
+    return mistypedKeys;
+}
+
 export function resetAccuracy() {
     for (let key in mistypedKeys) {
         mistypedKeys[key] = 0;
