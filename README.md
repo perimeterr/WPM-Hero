@@ -3,7 +3,7 @@
 Create a Python Virtual environment:
 ```python -m venv env```
 
-Activate the virtual environment:
+Activate the virtual environment:<br/>
 Windows:
 ```env\Scripts\activate```
 
