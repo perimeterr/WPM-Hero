@@ -8,6 +8,17 @@
 </head>
 <body>
     <h2>WPM Hero</h2>
+    {% if user.is_authenticated %}
+   <div class="user-info">
+       <span>Logged in as: {{ user.username }}</span>
+       <form method="post" action="{% url 'logout' %}" style="display:inline;">
+           {% csrf_token %}
+           <button type="submit">Logout</button>
+       </form>
+   </div>
+   {% else %}
+       <a href="{% url 'register' %}"><button>Register</button></a>
+   {% endif %}
     <div class="settings-panel">
         <form method="GET">
             <label>Difficulty:</label>
