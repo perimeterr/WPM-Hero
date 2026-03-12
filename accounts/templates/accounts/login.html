@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}WPM Hero | Login{% endblock %}
+
+{% block content %}
+<h1>Login</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+</form>
+
+<p><a href="{% url 'accounts:password_reset' %}">Forgot Password?</a></p>
+<p>No account yet? <a href="{% url 'accounts:register' %}">Register here</a></p>
+{% endblock %}
