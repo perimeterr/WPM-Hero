@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from .forms import UserLoginForm, UserRegistrationForm
+from django.contrib import messages
+from .forms import UserLoginForm, UserRegistrationForm, UserUpdateForm
 
 
 def register(request):
@@ -36,3 +37,16 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('accounts:login')
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = UserUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Your account has been updated!')
+            return redirect('accounts:edit_profile') 
+    else:
+        form = UserUpdateForm(instance=request.user)
+
+    return render(request, 'accounts/edit_profile.html', {'form': form})
