@@ -12,6 +12,7 @@
                 <option value="medium" {% if test_text.difficulty == "medium" %}selected{% endif %}>Medium</option>
                 <option value="hard" {% if test_text.difficulty == "hard" %}selected{% endif %}>Hard</option>
             </select>
+            <label>Timer:</label>
             <select id="timer" name="timer" onchange="this.form.submit()">
                 <option value="60" {% if test_timer.selected_timer == "60" %}selected{% endif %}>60</option>
                 <option value="30" {% if test_timer.selected_timer == "30" %}selected{% endif %}>30</option>
