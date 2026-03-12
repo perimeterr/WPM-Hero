@@ -21,6 +21,7 @@
         </form>
     </div>
     {% else %}
+        <a href="{% url 'accounts:login' %}"><button>Login</button></a>
         <a href="{% url 'accounts:register' %}"><button>Register</button></a>
     {% endif %}
     
