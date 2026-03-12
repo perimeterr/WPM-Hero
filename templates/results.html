@@ -1,12 +1,9 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <script src="{% static 'results.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <title>Results</title>
-</head>
-<body>
+
+{% block title %}Results{% endblock %}
+
+{% block content %}
     <h1>Results Page</h1>
     <p>This is the results page.</p>
     <p>WPM: <span id="wpm">0.00</span></p>
@@ -18,5 +15,8 @@
     <a href="{% url 'home:home' %}">Back to Home</a>
     <button id="replay-btn" onclick="window.location.href='{% url 'home:home' %}?difficulty={{ difficulty }}&replay=true'">Replay</button>
     <button id="new-test-btn" onclick="window.location.href='{% url 'home:home' %}'">New Test</button>
-</body>
-</html>
+{% endblock %}
+
+{% block extra_js %}
+    <script type="module" src="{% static 'results.js' %}"></script>
+{% endblock %}
