@@ -28,14 +28,17 @@
     </div>
 
     <hr>
-    <h3>Start Typing Below:</h3>
-    <textarea id="typing-input" placeholder="Start typing here..."></textarea>
+    <div class="typing-area">
+        <h3>Start Typing Below:</h3>
+        <textarea id="typing-input" placeholder="Start typing here..."></textarea>
 
-    <div id="results" class="results-display">
-        <p>WPM: <span id="wpm">0</span></p>
-        <p>Accuracy: <span id="accuracy">0%</span></p>
-        <p>Time: <span id="time">0s</span></p>
+        <div id="results" class="results-display">
+            <p>WPM: <span id="wpm">0</span></p>
+            <p>Accuracy: <span id="accuracy">0%</span></p>
+            <p>Time: <span id="time">0s</span></p>
+        </div>
     </div>
+    
 {% endblock %}
 
 {% block extra_js %}
