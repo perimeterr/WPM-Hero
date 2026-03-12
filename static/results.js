@@ -24,6 +24,33 @@ document.addEventListener('DOMContentLoaded', () => {
             </li>
         `).join('');
 
+    // Save results for logged in users
+    if (isLoggedIn) {
+        fetch('/save-result/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken(),
+            },
+            body: JSON.stringify({
+                difficulty: testDifficulty,
+                timer: testTimer,
+                wpm: finalWPM,
+                accuracy: finalAccuracy,
+                mistyped_keys: finalMistypedKeys
+            })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log('Save result response:', data);
+        })
+        .catch((error) => {
+            console.error('Error saving result:', error);
+        });
+    } else {
+        console.log('User not logged in. Results not saved.');
+    }
+
     
     replayBtn.addEventListener('click', () => {
         // Set replay flag to restore previous settings
@@ -44,4 +71,19 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('clickedReplay');
         });
     }
+    
+
 });
+
+function getCSRFToken() {
+    const cookies = document.cookie.split(';');
+
+    for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.startsWith('csrftoken=')) {
+            return cookie.substring('csrftoken='.length);
+        }
+    }
+
+    return '';
+}
