@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    {% block extra_css %}{% endblock %}
+    
+    <title>{% block title %}WPM Hero{% endblock %}</title>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <h2>WPM Hero</h2>
+    
+    {% if user.is_authenticated %}
+    <div class="user-info">
+        <span>Logged in as: {{ user.username }}</span>
+        <form method="post" action="{% url 'accounts:logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Logout</button>
+        </form>
+    </div>
+    {% else %}
+        <a href="{% url 'accounts:register' %}"><button>Register</button></a>
+    {% endif %}
+    
+    {% block content %}
+    {% endblock %}
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
