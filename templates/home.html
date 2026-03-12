@@ -1,24 +1,9 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <script type="module" src="{% static 'script.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <title>WPM Hero</title>
-</head>
-<body>
-    <h2>WPM Hero</h2>
-    {% if user.is_authenticated %}
-   <div class="user-info">
-       <span>Logged in as: {{ user.username }}</span>
-       <form method="post" action="{% url 'logout' %}" style="display:inline;">
-           {% csrf_token %}
-           <button type="submit">Logout</button>
-       </form>
-   </div>
-   {% else %}
-       <a href="{% url 'register' %}"><button>Register</button></a>
-   {% endif %}
+
+{% block title %}WPM Hero{% endblock %}
+
+{% block content %}
     <div class="settings-panel">
         <form method="GET">
             <label>Difficulty:</label>
@@ -50,6 +35,8 @@
         <p>Accuracy: <span id="accuracy">0%</span></p>
         <p>Time: <span id="time">0s</span></p>
     </div>
+{% endblock %}
 
-</body>
-</html>
+{% block extra_js %}
+    <script type="module" src="{% static 'script.js' %}"></script>
+{% endblock %}
