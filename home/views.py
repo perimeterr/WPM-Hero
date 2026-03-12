@@ -6,9 +6,10 @@ def get_test_text(request):
 
     testtext = TestText.objects.filter(difficulty=selected_difficulty).order_by('?').first()
 
-    # To implement: logic if the database is empty
-
-    display_text = testtext.content
+    if testtext is None:
+        display_text = "No test text available. Please add some text in the admin panel."
+    else:
+        display_text = testtext.content
 
     ctx = {
         'display_text': display_text,
