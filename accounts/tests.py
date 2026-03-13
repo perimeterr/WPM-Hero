@@ -130,3 +130,21 @@ class AccountLoginTests(TestCase):
         response = self.client.post(self.logout_url, follow=True)
         self.assertRedirects(response, reverse('home:home'))
         self.assertFalse(response.context['user'].is_authenticated)
+
+class AccountLogoutTests(TestCase):
+    def setUp(self):
+        self.User = get_user_model()
+        self.username = 'johndoe'
+        self.password = 'b3stp4ssw0rdEVER'
+        self.user = self.User.objects.create_user(
+            username=self.username, 
+            password=self.password,
+            email='johndoe@example.com'
+        )
+        self.logout_url = reverse('accounts:logout')
+
+    def test_logout_success(self):
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.post(self.logout_url, follow=True)
+        self.assertRedirects(response, reverse('home:home'))
+        self.assertFalse(response.context['user'].is_authenticated)
