@@ -6,7 +6,10 @@ export function validateCharacter(displayElementChars, typingInput) {
         
     displayElementChars.forEach((charSpan, index) => {
         const userChar = userValue[index];
-        const targetChar = charSpan.textContent.replace(/\u00A0/g, " ");
+        const targetChar = charSpan.textContent
+            .replace(/\u00A0/g, " ")      
+            .replace(/[\u2018\u2019]/g, "'")
+            .replace(/[\u201C\u201D]/g, '"'); 
 
         charSpan.classList.remove('current');
 
