@@ -148,3 +148,56 @@ class AccountLogoutTests(TestCase):
         response = self.client.post(self.logout_url, follow=True)
         self.assertRedirects(response, reverse('home:home'))
         self.assertFalse(response.context['user'].is_authenticated)
+
+class EditProfileTests(TestCase):
+    def setUp(self):
+        self.User = get_user_model()
+        self.username = 'johndoe'
+        self.password = 'b3stp4ssw0rdEVER'
+        self.user = self.User.objects.create_user(
+            username=self.username, 
+            password=self.password,
+            email='johndoe@example.com'
+        )
+        self.edit_profile_url = reverse('accounts:edit_profile')
+
+    def test_edit_profile_success(self):
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.post(
+            self.edit_profile_url, {
+                'username': 'betterjohndoe', 
+                'email': 'johnupdated@example.com'
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertFalse(self.User.objects.filter(username='johndoe', email='johndoe@example.com').exists())
+        self.assertEqual(self.user.username, 'betterjohndoe')
+        self.assertEqual(self.user.email, 'johnupdated@example.com')
+
+    def test_edit_profile_invalid_email(self):
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.post(
+            self.edit_profile_url, {
+                'username': 'betterjohndoe', 
+                'email': 'invalidemail'
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, 'johndoe')
+        self.assertEqual(self.user.email, 'johndoe@example.com')
+    
+    def test_edit_profile_username_already_exists(self):
+        self.User.objects.create_user(username='ogjohndoe', password='someotherpassword', email='ogjohndoe@example.com')
+        self.client.login(username=self.username, password=self.password)
+        response = self.client.post(
+            self.edit_profile_url, {
+                'username': 'ogjohndoe', 
+                'email': 'johndoe@example.com'
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.username, 'johndoe')
+        self.assertEqual(self.user.email, 'johndoe@example.com')
