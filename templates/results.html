@@ -52,7 +52,8 @@
 {% endblock %}
 
 {% block extra_js %}
-    <script type="module" src="{% static 'results.js' %}">
+    <script type="module" src="{% static 'results.js' %}"></script>
+    <script>
         const isLoggedIn = {% if user.is_authenticated %}true{% else %}false{% endif %};
         const testDifficulty = "{{ difficulty }}";
         const testTimer = "{{ timer }}";
