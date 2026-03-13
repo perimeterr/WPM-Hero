@@ -11,20 +11,27 @@ class TestTextTests(TestCase):
 
     def test_get_test_text_easy(self):
         response = self.client.get(reverse('home:home') + '?difficulty=easy')
-        self.assertContains(response, "Easy test text")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['test_text']['display_text'], "Easy test text")
 
     def test_get_test_text_medium(self):
         response = self.client.get(reverse('home:home') + '?difficulty=medium')
-        self.assertContains(response, "Medium test text")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['test_text']['display_text'], "Medium test text")
 
     def test_get_test_text_hard(self):
         response = self.client.get(reverse('home:home') + '?difficulty=hard')
-        self.assertContains(response, "Hard test text")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['test_text']['display_text'], "Hard test text")
 
     def test_get_test_text_no_text(self):
         TestText.objects.all().delete()
         response = self.client.get(reverse('home:home') + '?difficulty=easy')
-        self.assertContains(response, "No test text available. Please add some text in the admin panel.")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context['test_text']['display_text'],
+            "No test text available. Please add some text in the admin panel.",
+        )
 
 class PageRedirectTests(TestCase):
     def test_home_page_redirect(self):
