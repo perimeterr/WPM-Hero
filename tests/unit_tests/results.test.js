@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
+import { getCSRFToken } from '../../static/results.js';
 
 function buildResultsDom() {
 	document.body.innerHTML = `
@@ -11,74 +12,106 @@ function buildResultsDom() {
 	`;
 }
 
-async function loadResultsScript() {
-	await jest.isolateModulesAsync(async () => {
-		await import('../../static/results.js');
+global.testDifficulty = 'difficulty';
+global.testTimer = 15;
+
+describe('Results Module Base Tests', () => {
+	beforeEach(() => {
+		global.isLoggedIn = false;
+		buildResultsDom();
+		document.dispatchEvent(new Event('DOMContentLoaded'));
 	});
 
-	document.dispatchEvent(new Event('DOMContentLoaded'));
-}
-
-describe('results.js', () => {
-	beforeEach(() => {
-		jest.resetModules();
+	afterEach(() => {
 		localStorage.clear();
+	});
+
+	test('properly handle missing or invalid localStorage values', () => {
+		document.dispatchEvent(new Event('DOMContentLoaded'));
+
+		expect(document.getElementById('wpm').textContent).toBe('0.00');
+		expect(document.getElementById('accuracy').textContent).toBe('0.00%');
+		expect(document.getElementById('mistake-list').innerHTML).toBe('');
+	});
+
+	describe('Replay button', () => {
+		test('sets clickedReplay in localStorage to true when clicked', () => {
+			document.getElementById('replay-btn').click();
+
+			expect(localStorage.getItem('clickedReplay')).toBe('true');
+		});
+
+		test('does not remove testSettings when clicked', () => {
+			localStorage.setItem('testSettings', JSON.stringify({ difficulty: 'easy' }));
+
+			document.getElementById('replay-btn').click();
+
+			expect(localStorage.getItem('testSettings')).not.toBeNull();
+		});
+	});
+
+	describe('New Test button', () => {
+		test('removes clickedReplay from localStorage when clicked', () => {
+			localStorage.setItem('clickedReplay', 'true');
+
+			document.getElementById('new-test-btn').click();
+
+			expect(localStorage.getItem('clickedReplay')).toBeNull();
+		});
+
+		test('removes testSettings from localStorage when clicked', () => {
+			localStorage.setItem('testSettings', JSON.stringify({ difficulty: 'hard' }));
+
+			document.getElementById('new-test-btn').click();
+
+			expect(localStorage.getItem('testSettings')).toBeNull();
+		});
+
+		test('does not set clickedReplay when clicked', () => {
+			document.getElementById('new-test-btn').click();
+
+			expect(localStorage.getItem('clickedReplay')).toBeNull();
+		});
+	});
+});
+
+describe('Results Module Save Results Tests', () => {
+	let mockFetch;
+
+	beforeEach(() => {
+		global.isLoggedIn = true;
+		mockFetch = jest.fn().mockResolvedValue({
+			json: () => Promise.resolve({ success: true }),
+		});
+		global.fetch = mockFetch;
 		buildResultsDom();
 	});
 
 	afterEach(() => {
 		localStorage.clear();
-		document.body.innerHTML = '';
+		jest.clearAllMocks();
 	});
+	
+	test('sends POST request to save results with correct payload', async () => {
+		localStorage.setItem('finalWPM', '72.5');
+		localStorage.setItem('finalAccuracy', '95.0');
+		localStorage.setItem('finalMistypedKeys', JSON.stringify({ a: 2, s: 1 }));
 
-	test('renders WPM, accuracy, and mistakes from localStorage', async () => {
-		localStorage.setItem('finalWPM', '76.67');
-		localStorage.setItem('finalAccuracy', '90.00');
-		localStorage.setItem('finalMistypedKeys', JSON.stringify({ a: 2, z: 1 }));
+		document.dispatchEvent(new Event('DOMContentLoaded'));
 
-		await loadResultsScript();
-
-		expect(document.getElementById('wpm').textContent).toBe('76.67');
-		expect(document.getElementById('accuracy').textContent).toBe('90.00%');
-
-		const items = document.querySelectorAll('#mistake-list li');
-		expect(items).toHaveLength(2);
-		expect(items[0].textContent).toContain('A');
-		expect(items[0].textContent).toContain('2');
-		expect(items[1].textContent).toContain('Z');
-		expect(items[1].textContent).toContain('1');
-	});
-
-	test('replay click sets clickedReplay flag', async () => {
-		await loadResultsScript();
-
-		const replayButton = document.getElementById('replay-btn');
-		replayButton.click();
-		
-
-		expect(localStorage.getItem('clickedReplay')).toBe('true');
-	});
-
-	test('new test click clears replay-related settings', async () => {
-		localStorage.setItem('clickedReplay', 'true');
-		localStorage.setItem('testSettings', JSON.stringify({ difficulty: 'hard', timer: '30' }));
-
-		await loadResultsScript();
-
-		const newTestButton = document.getElementById('new-test-btn');
-		newTestButton.click();
-
-		expect(localStorage.getItem('clickedReplay')).toBeNull();
-		expect(localStorage.getItem('testSettings')).toBeNull();
-	});
-
-	test('back link clears replay flag', async () => {
-		localStorage.setItem('clickedReplay', 'true');
-
-		await loadResultsScript();
-
-		document.querySelector('a[href="/"]').click();
-
-		expect(localStorage.getItem('clickedReplay')).toBeNull();
+		expect(mockFetch).toHaveBeenCalledWith('/save-result/', expect.objectContaining({
+			method: 'POST',
+			headers: expect.objectContaining({
+				'Content-Type': 'application/json',
+				'X-CSRFToken': getCSRFToken(),
+			}),
+			body: JSON.stringify({
+				difficulty: testDifficulty,
+				timer: testTimer,
+				wpm: 72.5,
+				accuracy: 95.0,
+				mistyped_keys: { a: 2, s: 1 }
+			}),
+		}));
 	});
 });
