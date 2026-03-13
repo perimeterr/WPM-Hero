@@ -12,11 +12,49 @@
         <h3>Mistake Analysis</h3>
         <ul id="mistake-list"></ul>
     </div>
+
+    {% if user.is_authenticated %}
+        <div class="previous-results">
+            <h3>Your Previous Results</h3>
+
+            {% if previous_results %}
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Difficulty</th>
+                            <th>Time</th>
+                            <th>WPM</th>
+                            <th>Accuracy</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in previous_results %}
+                            <tr>
+                                <td>{{ result.date_taken }}</td>
+                                <td>{{ result.test.text.difficulty }}</td>
+                                <td>{{ result.test.duration_seconds }}s</td>
+                                <td>{{ result.wpm }}</td>
+                                <td>{{ result.accuracy }}%</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No previous results yet.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+
     <a href="{% url 'home:home' %}">Back to Home</a>
     <button id="replay-btn" onclick="window.location.href='{% url 'home:home' %}?difficulty={{ difficulty }}&replay=true'">Replay</button>
     <button id="new-test-btn" onclick="window.location.href='{% url 'home:home' %}'">New Test</button>
 {% endblock %}
 
 {% block extra_js %}
-    <script type="module" src="{% static 'results.js' %}"></script>
+    <script type="module" src="{% static 'results.js' %}">
+        const isLoggedIn = {% if user.is_authenticated %}true{% else %}false{% endif %};
+        const testDifficulty = "{{ difficulty }}";
+        const testTimer = "{{ timer }}";
+    </script>
 {% endblock %}

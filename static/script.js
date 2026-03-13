@@ -105,8 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('finalWPM', finalWPM.toFixed(2));
                     localStorage.setItem('finalAccuracy', finalAccuracy.toFixed(2));
                     localStorage.setItem('finalMistypedKeys', JSON.stringify(finalMistypedKeys));
+                    const difficulty = document.getElementById('difficulty').value;
+                    const timerValue = document.getElementById('timer').value;
 
-                    window.location.href = "/results/";
+                    window.location.href = `/results/?difficulty=${difficulty}&timer=${timerValue}`;
                 }
             );
         }
