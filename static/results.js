@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-function getCSRFToken() {
+export function getCSRFToken() {
     const cookies = document.cookie.split(';');
 
     for (let cookie of cookies) {
