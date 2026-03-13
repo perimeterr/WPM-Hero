@@ -4,6 +4,15 @@ body{
     padding: 30px;
 }
 
+.header{
+    margin-bottom: 20px;
+}
+
+#time{
+    font-size: 24px;
+    font-weight: bold;
+}
+
 #difficulty {
     margin-right: 25px; 
 }
@@ -12,6 +21,7 @@ body{
     position: relative;
     font-size: 24px;     
     display: block;
+    padding: 20px;
 }
 
 .char{
