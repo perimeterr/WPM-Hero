@@ -102,13 +102,13 @@ describe('Replay restore integration', () => {
     });
 
     test('restores saved difficulty, timer, and test text after replay', async () => {
-        const savedText = 'hello world';
+        const savedText = 'The most generic example text ever.';
         buildHomeReplayDom(savedText.length);
 
         localStorage.setItem('clickedReplay', 'true');
         localStorage.setItem('testSettings', JSON.stringify({
             difficulty: 'hard',
-            timer: '30',
+            timer: '15',
             displayText: savedText,
         }));
 
@@ -119,8 +119,8 @@ describe('Replay restore integration', () => {
         document.dispatchEvent(new Event('DOMContentLoaded'));
 
         expect(document.getElementById('difficulty').value).toBe('hard');
-        expect(document.getElementById('timer').value).toBe('30');
-        expect(document.getElementById('time').textContent).toBe('30');
+        expect(document.getElementById('timer').value).toBe('15');
+        expect(document.getElementById('time').textContent).toBe('15');
 
         const renderedText = Array.from(document.querySelectorAll('.char'))
             .map((char) => char.textContent)
