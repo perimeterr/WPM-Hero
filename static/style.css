@@ -5,7 +5,7 @@ body{
 }
 
 .header{
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 #time{
@@ -15,6 +15,10 @@ body{
 
 #difficulty {
     margin-right: 25px; 
+}
+
+.new-replay-btns{
+    width: auto;
 }
 
 .text-display{
@@ -41,6 +45,11 @@ body{
     height: 120px;
     font-size: 20px;
     padding: 10px;
+}
+
+.results{
+    display: flex;
+    gap: 20px;
 }
 
 
