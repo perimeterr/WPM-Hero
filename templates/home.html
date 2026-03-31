@@ -1,25 +1,22 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <script type="module" src="{% static 'script.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'style.css' %}">
-    <title>WPM Hero</title>
-</head>
-<body>
-    <h2>WPM Hero</h2>
+
+{% block title %}WPM Hero{% endblock %}
+
+{% block content %}
     <div class="settings-panel">
         <form method="GET">
             <label>Difficulty:</label>
-            <select name="difficulty" onchange="this.form.submit()">
+            <select id="difficulty" name="difficulty" onchange="this.form.submit()">
                 <option value="easy" {% if test_text.difficulty == "easy" %}selected{% endif %}>Easy</option>
                 <option value="medium" {% if test_text.difficulty == "medium" %}selected{% endif %}>Medium</option>
                 <option value="hard" {% if test_text.difficulty == "hard" %}selected{% endif %}>Hard</option>
             </select>
-            <select id="timer">
-                <option value="60">60</option>
-                <option value="30">30</option>
-                <option value="15">15</option>
+            <label>Timer:</label>
+            <select id="timer" name="timer" onchange="this.form.submit()">
+                <option value="60" {% if test_timer.selected_timer == "60" %}selected{% endif %}>60</option>
+                <option value="30" {% if test_timer.selected_timer == "30" %}selected{% endif %}>30</option>
+                <option value="15" {% if test_timer.selected_timer == "15" %}selected{% endif %}>15</option>
             </select>
         </form>
     </div>
@@ -31,16 +28,19 @@
     </div>
 
     <hr>
-    <h3>Start Typing Below:</h3>
-    <textarea id="typing-input" placeholder="Start typing here..."></textarea>
+    <div class="timer"><span id="time">0s</span></div>
+    <div class="typing-area">
+        <h3>Start Typing Below:</h3>
+        <textarea id="typing-input" placeholder="Start typing here..."></textarea>
 
-    <div id="results" class="results-display">
-        <p>WPM: <span id="wpm">0</span></p>
-        <p>Accuracy: <span id="accuracy">0%</span></p>
-        <p>Time: <span id="time">0s</span></p>
+        <div id="results" class="results-display">
+            <p>WPM: <span id="wpm">0</span></p>
+            <p>Accuracy: <span id="accuracy">0%</span></p>
+        </div>
     </div>
+    
+{% endblock %}
 
-    <button id="reset-btn">Reset</button>
-
-</body>
-</html>
+{% block extra_js %}
+    <script type="module" src="{% static 'script.js' %}"></script>
+{% endblock %}

@@ -1,16 +1,56 @@
+body{
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+}
+
+.header{
+    margin-bottom: 10px;
+}
+
+#time{
+    font-size: 24px;
+    font-weight: bold;
+}
+
+#difficulty {
+    margin-right: 25px; 
+}
+
+.new-replay-btns{
+    width: auto;
+}
+
+.text-display{
+    position: relative;
+    font-size: 24px;     
+    display: block;
+    padding: 20px;
+}
+
 .char{
     display: inline-block;
-    letter-spacing: -5px;
+    letter-spacing: -7px;
 }
-.text-display{
-    font-size: 24px;
-    margin-bottom: 20px;
+
+.current {
+    background-color: #e2e8f0; 
+    color: #000;
+    border-bottom: 2px solid #64748b; 
+    border-radius: 2px;
 }
+
 #typing-input {
     width: 100%;
     height: 120px;
     font-size: 20px;
     padding: 10px;
 }
+
+.results{
+    display: flex;
+    gap: 20px;
+}
+
 
 

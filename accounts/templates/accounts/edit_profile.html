@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}WPM Hero | Edit Profile{% endblock %}
+
+{% block content %}
+<h1>Edit Profile</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+</form>
+
+<p><a href="{% url 'home:home' %}">Back to Typing Test</a></p>
+{% endblock %}
