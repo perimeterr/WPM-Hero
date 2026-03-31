@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from home.models import TestText, Test, TestResult
 
 class AccountRegistrationTests(TestCase):
     def setUp(self):
@@ -201,3 +202,70 @@ class EditProfileTests(TestCase):
         self.user.refresh_from_db()
         self.assertEqual(self.user.username, 'johndoe')
         self.assertEqual(self.user.email, 'johndoe@example.com')
+
+class ProfileDashboardTests(TestCase):
+    def setUp(self):
+        self.User = get_user_model()
+        self.username = 'johndoe'
+        self.password = 'b3stp4ssw0rdEVER'
+        self.user = self.User.objects.create_user(
+            username=self.username, 
+            password=self.password,
+            email='johndoe@example.com'
+        )
+        
+        self.sample_text = TestText.objects.create(
+            content="The quick brown fox jumps over the lazy dog.",
+            difficulty="easy"
+        )
+        
+        self.typing_test = Test.objects.create(
+            text=self.sample_text,
+            duration_seconds=60 
+        )
+
+        self.dashboard_url = reverse('accounts:profile_dashboard') 
+
+    def test_dashboard_displays_correct_stats(self):
+        self.client.login(username=self.username, password=self.password)
+
+        TestResult.objects.create(
+            user=self.user, 
+            test=self.typing_test, 
+            wpm=60.0, 
+            accuracy=98.5
+        )
+        TestResult.objects.create(
+            user=self.user, 
+            test=self.typing_test, 
+            wpm=65.0, 
+            accuracy=99.0
+        )
+
+        response = self.client.get(self.dashboard_url)
+
+        self.assertEqual(response.status_code, 200)
+        
+        self.assertEqual(response.context['tests_count'], 2)
+
+        self.assertEqual(response.context['total_time'], 120)
+
+        self.assertContains(response, "Total Tests Taken: 2")
+        self.assertContains(response, "Total Time Spent: 120")
+
+    def test_dashboard_is_private(self):
+        other_user = self.User.objects.create_user(username='hacker', password='password')
+
+        TestResult.objects.create(
+            user=other_user, 
+            test=self.typing_test, 
+            wpm=10.0, 
+            accuracy=50.0
+        )
+
+        self.client.login(username=self.username, password=self.password)
+        
+        response = self.client.get(self.dashboard_url)
+
+        self.assertEqual(response.context['tests_count'], 0)
+        self.assertEqual(response.context['total_time'], 0)
