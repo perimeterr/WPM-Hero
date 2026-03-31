@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}WPM Hero | Profile{% endblock %}
+
+{% block content %}
+<a href="{% url 'accounts:edit_profile' %}">Edit Profile</a>
+<h2>Total Tests Taken: {{ tests_count }} </h2>
+<h2>Total Time Spent: {{ total_time }} seconds </h2>
+{% endblock %}
