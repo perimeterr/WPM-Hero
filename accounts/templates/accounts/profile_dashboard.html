@@ -6,4 +6,30 @@
 <a href="{% url 'accounts:edit_profile' %}">Edit Profile</a>
 <h2>Total Tests Taken: {{ tests_count }} </h2>
 <h2>Total Time Spent: {{ total_time }} seconds </h2>
+
+<hr>
+<h2>Personal Records</h2>
+
+{% if personal_records %}
+<table border="1" cellpadding="10">
+    <thead>
+        <tr>
+            <th>Difficulty</th>
+            <th>Timer</th>
+            <th>Highest WPM</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in personal_records %}
+        <tr>
+            <td>{{ record.test__text__difficulty|title }}</td>
+            <td>{{ record.test__duration_seconds }} seconds</td>
+            <td>{{ record.best_wpm }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No personal records yet.</p>
+{% endif %}
 {% endblock %}

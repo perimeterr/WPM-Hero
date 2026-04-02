@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Sum
+from django.db.models import Sum, Max
 from .forms import UserLoginForm, UserRegistrationForm, UserUpdateForm
 from home.models import TestResult
 
@@ -64,9 +64,17 @@ def profile_dashboard(request):
 
     actual_seconds = time_data['total_time'] or 0
 
+    personal_records = (
+        test_results
+        .values('test__text__difficulty', 'test__duration_seconds')
+        .annotate(best_wpm=Max('wpm'))
+        .order_by('test__text__difficulty', 'test__duration_seconds')
+    )
+
     ctx = {
         'tests_count': tests_count,
-        'total_time': actual_seconds
+        'total_time': actual_seconds,
+        'personal_records': personal_records
     }
 
     return render(request, 'accounts/profile_dashboard.html', ctx)
