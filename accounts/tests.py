@@ -269,3 +269,64 @@ class ProfileDashboardTests(TestCase):
 
         self.assertEqual(response.context['tests_count'], 0)
         self.assertEqual(response.context['total_time'], 0)
+
+class OverallMetricsTests(TestCase):
+    def setUp(self):
+        self.User = get_user_model()
+        self.username = 'johndoe'
+        self.password = 'b3stp4ssw0rdEVER'
+        self.user = self.User.objects.create_user(
+            username=self.username, 
+            password=self.password,
+            email='johndoe@example.com'
+        )
+        self.client.login(username=self.username, password=self.password)
+        
+        self.dashboard_url = reverse('accounts:profile_dashboard')
+        
+        self.text_easy = TestText.objects.create(
+            content="The quick brown fox jumps over the lazy dog.", 
+            difficulty="easy"
+        )
+
+        self.text_medium = TestText.objects.create(
+            content="Walking through the park, she noticed the leaves were falling gently.", 
+            difficulty="medium"
+        )
+
+        self.text_hard = TestText.objects.create(
+            content="Despite the storm, the sailors navigated the treacherous waters with precision.", 
+            difficulty="hard"
+        )
+   
+        self.test_easy = Test.objects.create(text=self.text_easy, duration_seconds=15)
+        self.test_medium = Test.objects.create(text=self.text_medium, duration_seconds=30)
+        self.test_hard = Test.objects.create(text=self.text_hard, duration_seconds=60)
+
+    def test_overall_metrics_calculation(self):
+        TestResult.objects.create(user=self.user, test=self.test_easy, wpm=40, accuracy=90)
+        TestResult.objects.create(user=self.user, test=self.test_easy, wpm=50, accuracy=95)
+        TestResult.objects.create(user=self.user, test=self.test_medium, wpm=60, accuracy=85)
+        TestResult.objects.create(user=self.user, test=self.test_hard, wpm=55, accuracy=80)
+        
+        response = self.client.get(self.dashboard_url)
+        self.assertEqual(response.status_code, 200)
+
+        overall_metrics = response.context['overall_metrics']
+        
+        self.assertEqual(overall_metrics['highest_wpm'], 60)
+        self.assertAlmostEqual(overall_metrics['average_wpm'], 51.25, places=2)
+        
+        self.assertEqual(overall_metrics['highest_accuracy'], 95)
+        self.assertAlmostEqual(overall_metrics['average_accuracy'], 87.5, places=2)
+
+    def test_overall_metrics_no_results(self):
+        response = self.client.get(self.dashboard_url)
+        self.assertEqual(response.status_code, 200)
+
+        overall_metrics = response.context['overall_metrics']
+        
+        self.assertIsNone(overall_metrics['highest_wpm'])
+        self.assertIsNone(overall_metrics['average_wpm'])
+        self.assertIsNone(overall_metrics['highest_accuracy'])
+        self.assertIsNone(overall_metrics['average_accuracy'])
