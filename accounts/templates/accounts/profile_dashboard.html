@@ -32,4 +32,39 @@
 {% else %}
 <p>No personal records yet.</p>
 {% endif %}
+
+<hr>
+<h2>Overall Performance Metrics</h2>
+
+{% if overall_metrics %}
+<table border="1" cellpadding="10">
+    <thead>
+        <tr>
+            <th>Metric</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Highest WPM</td>
+            <td>{{ overall_metrics.highest_wpm|default:"N/A" }}</td>
+        </tr>
+        <tr>
+            <td>Average WPM</td>
+            <td>{{ overall_metrics.average_wpm|floatformat:2|default:"N/A" }}</td>
+        </tr>
+        <tr>
+            <td>Highest Accuracy</td>
+            <td>{{ overall_metrics.highest_accuracy|default:"N/A" }}%</td>
+        </tr>
+        <tr>
+            <td>Average Accuracy</td>
+            <td>{{ overall_metrics.average_accuracy|floatformat:2|default:"N/A" }}%</td>
+        </tr>
+    </tbody>
+</table>
+{% else %}
+<p>No Performance Metrics yet.</p>
+{% endif %}
+
 {% endblock %}
