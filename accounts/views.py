@@ -78,11 +78,16 @@ def profile_dashboard(request):
         average_accuracy=Avg('accuracy')
     )
 
+    progress_data_dates = test_results.values_list('test__created_at', flat=True).order_by('test__created_at')
+    progress_data_wpm = test_results.values_list('wpm', flat=True).order_by('test__created_at')
+
     ctx = {
         'tests_count': tests_count,
         'total_time': actual_seconds,
         'personal_records': personal_records,
         'overall_metrics': overall_metrics,
+        'progress_data_dates': list(progress_data_dates),
+        'progress_data_wpm': list(progress_data_wpm),
     }
 
     return render(request, 'accounts/profile_dashboard.html', ctx)
