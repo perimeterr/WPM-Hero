@@ -19,6 +19,10 @@
                 <option value="15" {% if test_timer.selected_timer == "15" %}selected{% endif %}>15</option>
             </select>
         </form>
+
+        <a href="{% url 'home:customtext' %}">
+            <button type="button">Create Custom Text</button>
+        </a>
     </div>
 
     <div id="text-content" class="text-display">

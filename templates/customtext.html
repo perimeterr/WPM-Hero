@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}WPM Hero | Create Custom Text{% endblock %}
+{% block content %}
+<h2>Create Custom Text</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label for="content">Text:</label><br>
+    <textarea name="content" id="content" rows="6" cols="50" required></textarea><br><br>
+
+    <label for="difficulty">Difficulty:</label><br>
+    <select name="difficulty" id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+    </select><br><br>
+
+    <button type="submit">Save Custom Text</button>
+</form>
+{% endblock %}

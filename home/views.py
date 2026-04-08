@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 from .models import TestText, Test, TestResult
 
 def get_test_text(request):
@@ -64,6 +65,19 @@ def results(request):
     
     return render(request, 'results.html', ctx)
 
+def customtext(request):
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        difficulty = request.POST.get('difficulty', 'easy')
+
+        if content:
+            TestText.objects.create(
+                content=content,
+                difficulty=difficulty
+            )
+            return redirect('home:home')
+
+    return render(request, 'customtext.html')
 
 @require_POST
 def save_result(request):
