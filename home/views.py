@@ -71,13 +71,37 @@ def customtext(request):
         difficulty = request.POST.get('difficulty', 'easy')
 
         if content:
+            word_count = len(content.split())
+
+            if word_count < 60:
+                return render(request, 'customtext.html', {
+                    'error': 'Text must be at least 60 words.',
+                    'content': content,
+                    'difficulty': difficulty
+                })
+            
+            if word_count > 600:
+                return render(request, 'customtext.html', {
+                    'error': 'Text must not exceed 600 words.',
+                    'content': content,
+                    'difficulty': difficulty
+                })
+        
             TestText.objects.create(
                 content=content,
                 difficulty=difficulty
             )
             return redirect('home:home')
+        
+    
+    else:
+        content = ''
+        difficulty = 'easy'
 
-    return render(request, 'customtext.html')
+    return render(request, 'customtext.html', {
+        'content': content,
+        'difficulty': difficulty
+    })
 
 @require_POST
 def save_result(request):
