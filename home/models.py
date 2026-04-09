@@ -10,6 +10,8 @@ class TestText(models.Model):
         ('medium', 'Medium'),
         ('hard', 'Hard'),
     ])
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+    )
 
 class Test(models.Model):
     text = models.ForeignKey(TestText, on_delete=models.CASCADE)
