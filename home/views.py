@@ -125,7 +125,6 @@ def save_result(request):
     try:
         data = json.loads(request.body)
 
-        difficulty = data.get('difficulty')
         timer = int(data.get('timer'))
         wpm = float(data.get('wpm'))
         accuracy = float(data.get('accuracy'))
