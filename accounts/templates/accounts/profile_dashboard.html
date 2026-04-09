@@ -4,8 +4,22 @@
 
 {% block content %}
 <a href="{% url 'accounts:edit_profile' %}">Edit Profile</a>
-<h2>Total Tests Taken: {{ tests_count }} </h2>
-<h2>Total Time Spent: {{ total_time }} seconds </h2>
+<a href="{% url 'home:home' %}">Back to Typing Test</a>
+<h2>Basic Statistics</h2>
+<list>
+    <ul>Total Tests Taken: {{ tests_count }}</ul>
+    <ul>
+        <form method="get" action="{% url 'accounts:profile_dashboard' %}">
+        <label for="time-filter">Display Time in:</label>
+        <select id="time-filter" name="time-filter" onchange="this.form.submit()">
+            <option value="seconds" {% if selected_time_filter == 'seconds' %}selected{% endif %}>Seconds</option>
+            <option value="minutes" {% if selected_time_filter == 'minutes' %}selected{% endif %}>Minutes</option>
+            <option value="hours" {% if selected_time_filter == 'hours' %}selected{% endif %}>Hours</option>
+        </select>
+</form>
+    </ul>
+    <ul>Total Time Spent: {{ total_time }} {{ selected_time_filter }}</ul>
+</list>
 
 <hr>
 <h2>Personal Records</h2>

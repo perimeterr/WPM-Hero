@@ -60,6 +60,8 @@ def profile_dashboard(request):
     test_results = TestResult.objects.filter(user=request.user)
     tests_count = test_results.count()
 
+   
+
     DEFAULT_FILTER_DAYS = '30'
     chart_filter = request.GET.get('filter', DEFAULT_FILTER_DAYS)
     allowed_ = {'1', '7', '30', '90', '180', '365', 'all'}
@@ -76,7 +78,12 @@ def profile_dashboard(request):
         total_time=Sum('test__duration_seconds')
     )
 
-    actual_seconds = time_data['total_time'] or 0
+    time_filter = request.GET.get('time-filter', 'seconds')
+    actual_time = time_data['total_time'] or 0
+    if time_filter == 'minutes':
+        actual_time = round(actual_time/60, 2)
+    elif time_filter == 'hours':
+        actual_time = round (actual_time/3600, 2)
 
     personal_records = (
         test_results
@@ -102,7 +109,8 @@ def profile_dashboard(request):
 
     ctx = {
         'tests_count': tests_count,
-        'total_time': actual_seconds,
+        'total_time': actual_time,
+        'selected_time_filter': time_filter,
         'personal_records': personal_records,
         'overall_metrics': overall_metrics,
         'progress_data_dates': progress_data_dates,
