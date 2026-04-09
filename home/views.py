@@ -8,12 +8,23 @@ from .models import TestText, Test, TestResult
 def get_test_text(request):
     selected_difficulty = request.GET.get('difficulty', 'easy')
 
-    testtext = TestText.objects.filter(difficulty=selected_difficulty).order_by('?').first()
+    test_texts = TestText.objects.filter(difficulty=selected_difficulty, created_by__isnull=True)
+
+    if request.user.is_authenticated:
+        test_texts = test_texts | TestText.objects.filter(difficulty=selected_difficulty, created_by=request.user)
+    
+    if test_texts:
+        testtext = test_texts.order_by('?').first()
+    else:
+        testtext = None
 
     if testtext is None:
         display_text = "No test text available. Please add some text in the admin panel."
+        request.session.pop('current_test_text_id', None)
     else:
         display_text = testtext.content
+        request.session['current_test_text_id'] = testtext.id
+
 
     ctx = {
         'display_text': display_text,
@@ -65,6 +76,7 @@ def results(request):
     
     return render(request, 'results.html', ctx)
 
+@login_required
 def customtext(request):
     if request.method == 'POST':
         content = request.POST.get('content')
@@ -89,7 +101,8 @@ def customtext(request):
         
             TestText.objects.create(
                 content=content,
-                difficulty=difficulty
+                difficulty=difficulty,
+                created_by=request.user,
             )
             return redirect('home:home')
         
@@ -118,7 +131,11 @@ def save_result(request):
         accuracy = float(data.get('accuracy'))
         mistyped_keys = data.get('mistyped_keys', {})
 
-        test_text = TestText.objects.filter(difficulty=difficulty).first()
+        test_text_id = request.session.get('current_test_text_id')
+
+        if test_text_id is not None:
+            test_text = TestText.objects.filter(id=test_text_id).first()
+
         if not test_text:
             return JsonResponse({'success': False, 'message': 'No sample text found for this difficulty'}, status=400)
 
