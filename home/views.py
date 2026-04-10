@@ -9,9 +9,12 @@ def get_test_text(request):
     selected_difficulty = request.GET.get('difficulty', 'easy')
 
     test_texts = TestText.objects.filter(difficulty=selected_difficulty, created_by__isnull=True)
+    all_custom_texts = None
+    custom_text = None
 
     if request.user.is_authenticated:
-        test_texts = test_texts | TestText.objects.filter(difficulty=selected_difficulty, created_by=request.user)
+        all_custom_texts = TestText.objects.filter(difficulty=selected_difficulty, created_by=request.user)
+        custom_text = request.GET.get('custom-text')
     
     if test_texts:
         testtext = test_texts.order_by('?').first()
@@ -24,11 +27,14 @@ def get_test_text(request):
     else:
         display_text = testtext.content
         request.session['current_test_text_id'] = testtext.id
-
+    
+    if custom_text != None and custom_text != "":
+        display_text = TestText.objects.get(id=custom_text).content
 
     ctx = {
         'display_text': display_text,
         'difficulty': selected_difficulty,
+        'all_custom_texts': all_custom_texts
     }
     
     return ctx
