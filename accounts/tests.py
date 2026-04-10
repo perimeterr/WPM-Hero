@@ -119,17 +119,32 @@ class AccountLoginTests(TestCase):
         self.assertTrue(response.context['user'].is_authenticated)
 
     def test_invalid_user_login_failure(self):
-        response = self.client.post(self.login_url, {'username': 'johndoestwin', 'password': self.password}, follow=True)
+        response = self.client.post(
+            self.login_url, {
+                'username': 'johndoestwin', 
+                'password': self.password
+            }, 
+            follow=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['user'].is_authenticated)
 
     def test_wrong_password_login_failure(self):
-        response = self.client.post(self.login_url, {'username': self.username, 'password': 'wrongpassword'}, follow=True)
+        response = self.client.post(
+            self.login_url, {
+                'username': self.username, 
+                'password': 'wrongpassword'
+            }, 
+            follow=True
+        )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context['user'].is_authenticated)
 
     def test_logout_success(self):
-        self.client.login(username=self.username, password=self.password)
+        self.client.login(
+            username=self.username, 
+            password=self.password
+        )
         response = self.client.post(self.logout_url, follow=True)
         self.assertRedirects(response, reverse('home:home'))
         self.assertFalse(response.context['user'].is_authenticated)
@@ -147,7 +162,10 @@ class AccountLogoutTests(TestCase):
         self.logout_url = reverse('accounts:logout')
 
     def test_logout_success(self):
-        self.client.login(username=self.username, password=self.password)
+        self.client.login(
+            username=self.username, 
+            password=self.password
+        )
         response = self.client.post(self.logout_url, follow=True)
         self.assertRedirects(response, reverse('home:home'))
         self.assertFalse(response.context['user'].is_authenticated)
@@ -174,7 +192,10 @@ class EditProfileTests(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.user.refresh_from_db()
-        self.assertFalse(self.User.objects.filter(username='johndoe', email='johndoe@example.com').exists())
+        self.assertFalse(self.User.objects.filter(
+            username='johndoe', 
+            email='johndoe@example.com').exists()
+        )
         self.assertEqual(self.user.username, 'betterjohndoe')
         self.assertEqual(self.user.email, 'johnupdated@example.com')
 
@@ -192,8 +213,15 @@ class EditProfileTests(TestCase):
         self.assertEqual(self.user.email, 'johndoe@example.com')
     
     def test_edit_profile_username_already_exists(self):
-        self.User.objects.create_user(username='ogjohndoe', password='someotherpassword', email='ogjohndoe@example.com')
-        self.client.login(username=self.username, password=self.password)
+        self.User.objects.create_user(
+            username='ogjohndoe', 
+            password='someotherpassword', 
+            email='ogjohndoe@example.com'
+        )
+        self.client.login(
+            username=self.username, 
+            password=self.password
+        )
         response = self.client.post(
             self.edit_profile_url, {
                 'username': 'ogjohndoe', 
