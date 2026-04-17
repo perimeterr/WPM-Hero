@@ -13,28 +13,23 @@
     <div class="header">
         <div class="logo">
             <h1>
+                <a href="{% url 'home:home' %}">
                 WPM
                 <span id="logo-hero">Hero</span>
+                </a>
             </h1>
         </div>
         {% if user.is_authenticated %}
         <div class="user-info">
-<<<<<<< Updated upstream
-            <span>Logged in as: <a href="{% url 'accounts:profile_dashboard' %}">{{ user.username }}</a></span>
-=======
             <a href="{% url 'accounts:profile_dashboard' %}">{{ user.username }}</a>
->>>>>>> Stashed changes
             <form method="post" action="{% url 'accounts:logout' %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit">Logout</button>
             </form>
-<<<<<<< Updated upstream
-=======
             {% else %}
             <a href="{% url 'accounts:login' %}">Login</a>
             {% endif %}
             
->>>>>>> Stashed changes
         </div>
         
         

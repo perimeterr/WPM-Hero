@@ -4,33 +4,28 @@
 }
 
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 10px 50px 10px;
     background-color: #1e1b1c;
     color: #ffffff;
     font-family: futura;
-    font-weight: 400;
     font-size: 24px;
     line-height: 1.6;
     min-height: 100vh;
     overflow-x: hidden;
 }
 
-.app {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    padding: 10px;
-}
-
-.container {
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
 .header{
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 #logo-hero {
@@ -56,29 +51,27 @@ body {
   width: 8rem;
   height: 5rem;
   border-radius: 30%;
-  box-shadow: 0 4px 20px #272727;
+  border-style: ridge;
+  border-width: 0.5rem;
   letter-spacing: -0.02em;
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
-}
-
-.timer:hover {
-  background: #e6a832;
-  box-shadow: 0 6px 28px rgba(200, 146, 42, 0.5);
-  transform: translateY(-1px);
-}
-
-.timer:active {
-  transform: translateY(0);
 }
 
 .panel-wpm {
-    justify-content: left;
+    text-align: right;
+    width: 200px;
 }
 
 .panel-accuracy {
-    justify-content: right;
+    text-align: left;
+    width: 120px;
+}
+
+#wpm {
+    font-size: 2rem;
+}
+
+#accuracy {
+    font-size: 2rem;
 }
 
 .char{
