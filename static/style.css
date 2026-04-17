@@ -1,56 +1,88 @@
-body{
+@font-face {
+    font-family: futura;
+    src: url('static/futura-pt/FuturaCyrillicLight.ttf');
+}
+
+body {
+    background-color: #1e1b1c;
+    color: #ffffff;
+    font-family: futura;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.app {
     display: flex;
     flex-direction: column;
-    padding: 30px;
+    min-height: 100vh;
+    padding: 10px;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .header{
-    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-#time{
-    font-size: 24px;
-    font-weight: bold;
+#logo-hero {
+    color: #8f1816;
 }
 
-#difficulty {
-    margin-right: 25px; 
+
+.top-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
 }
 
-.new-replay-btns{
-    width: auto;
+.timer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #bc9821;
+  color: #ffffff;
+  font-size: 3.5rem;
+  font-weight: 700;
+  width: 8rem;
+  height: 5rem;
+  border-radius: 30%;
+  box-shadow: 0 4px 20px #272727;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.12s ease, box-shadow 0.12s ease, transform 0.12s ease;
 }
 
-.text-display{
-    position: relative;
-    font-size: 24px;     
-    display: block;
-    padding: 20px;
+.timer:hover {
+  background: #e6a832;
+  box-shadow: 0 6px 28px rgba(200, 146, 42, 0.5);
+  transform: translateY(-1px);
+}
+
+.timer:active {
+  transform: translateY(0);
+}
+
+.panel-wpm {
+    justify-content: left;
+}
+
+.panel-accuracy {
+    justify-content: right;
 }
 
 .char{
     display: inline-block;
-    letter-spacing: -7px;
+    letter-spacing: -5px;
 }
-
-.current {
-    background-color: #e2e8f0; 
-    color: #000;
-    border-bottom: 2px solid #64748b; 
-    border-radius: 2px;
-}
-
-#typing-input {
-    width: 100%;
-    height: 120px;
-    font-size: 20px;
-    padding: 10px;
-}
-
-.results{
-    display: flex;
-    gap: 20px;
-}
-
-
 

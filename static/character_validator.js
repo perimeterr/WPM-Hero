@@ -16,7 +16,7 @@ export function validateCharacter(displayElementChars, typingInput) {
         }
 
         if (userChar == null) {
-            charSpan.style.color = 'black';
+            charSpan.style.color = 'white';
             removeMistakeIndex(index);
 
             if (index === currentIndex) {
@@ -39,6 +39,6 @@ export function validateCharacter(displayElementChars, typingInput) {
 
 export function resetDisplayTextColor(displayElementChars) {
     displayElementChars.forEach(charSpan => {
-        charSpan.style.color = 'black';
+        charSpan.style.color = 'white';
     });
 }
