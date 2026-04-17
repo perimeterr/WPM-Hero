@@ -16,7 +16,7 @@ export function validateCharacter(displayElementChars, typingInput) {
         }
 
         if (userChar == null) {
-            charSpan.style.color = 'white';
+            charSpan.style.color = 'gray';
             removeMistakeIndex(index);
 
             if (index === currentIndex) {
@@ -26,7 +26,7 @@ export function validateCharacter(displayElementChars, typingInput) {
             }
             
         } else if (userChar === targetChar) {
-            charSpan.style.color = 'green';
+            charSpan.style.color = 'white';
             removeMistakeIndex(index);
             trackCorrectKey(targetChar, index);
         } else {

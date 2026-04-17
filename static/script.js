@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeDisplay = document.getElementById("time");
     const timer = document.getElementById("timer");
 
+    document.addEventListener('click', () => typingInput.focus());
+
     function initializeTest() {
         if (localStorage.getItem('clickedReplay') === 'true') {
             const savedSettings = JSON.parse(localStorage.getItem('testSettings'));

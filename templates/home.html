@@ -37,18 +37,12 @@
         
     </main>
     
-
-    <div id="text-content" class="text-display">
+    <div id="typing-wrapper">
+        <input type="text" id="typing-input" autofocus />
+        <div id="text-content" class="text-display">
         {% for char in test_text.display_text %}
             <span class="char">{% if char == " " %}&nbsp;{% else %}{{ char }}{% endif %}</span>
         {% endfor %}
-    </div>
-
-    <hr>
-    
-    <div class="typing-area">
-        <h3>Start Typing Below:</h3>
-        <textarea id="typing-input" placeholder="Start typing here..."></textarea>
     </div>
     
 {% endblock %}

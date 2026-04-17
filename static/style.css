@@ -52,6 +52,7 @@ a {
   height: 5rem;
   border-radius: 30%;
   border-style: ridge;
+  border-color: #acacac;
   border-width: 0.5rem;
   letter-spacing: -0.02em;
 }
@@ -74,8 +75,24 @@ a {
     font-size: 2rem;
 }
 
-.char{
-    display: inline-block;
-    letter-spacing: -5px;
+#typing-wrapper {
+    padding: 2rem;
+    position: relative;
+    font-size: 1.5rem;
+    line-height: 3rem;
 }
+
+#typing-input {
+    position: absolute;
+    opacity: 0;       
+    pointer-events: none;
+    z-index: -1;
+}
+
+.char{
+    color: gray;
+    display: inline-block;
+    letter-spacing: -7px;
+}
+
 
