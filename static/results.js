@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mistakeEntries = Object.entries(finalMistypedKeys);
 
     wpmDisplay.textContent = finalWPM.toFixed(2);
-    accuracyDisplay.textContent = finalAccuracy.toFixed(2) + '%';
+    accuracyDisplay.textContent = finalAccuracy.toFixed(2);
 
     mistakeList.innerHTML = Object.entries(finalMistypedKeys)
         .map(([key, count]) => `

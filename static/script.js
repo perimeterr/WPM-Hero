@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 timer.value = savedSettings.timer;
                 setTimer(timer.value);
                 timeDisplay.textContent = getTimeLeft();
-                accuracyDisplay.textContent = "100.00%";
+                accuracyDisplay.textContent = "100.00";
                 wordsPerMinuteDisplay.textContent = "0.00";
                 
                 // Restore display text
@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         setTimer(timer.value);
         timeDisplay.textContent = getTimeLeft();
-        accuracyDisplay.textContent = "100.00%";
+        accuracyDisplay.textContent = "100.00";
         wordsPerMinuteDisplay.textContent = "0.00";
     }
     
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateAccuracyDisplay(accuracy) {
-        accuracyDisplay.textContent = accuracy.toFixed(2) + '%';
+        accuracyDisplay.textContent = accuracy.toFixed(2);
     }
 
     function resetTest() {
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const wpm = getWordsPerMinute(getCorrectIndicesSize(), getTestStartTime());
             const accuracy = getRealTimeAccuracy();
             wordsPerMinuteDisplay.textContent = wpm.toFixed(2);
-            accuracyDisplay.textContent = accuracy.toFixed(2) + '%';
+            accuracyDisplay.textContent = accuracy.toFixed(2);
         }
     });
 });
