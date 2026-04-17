@@ -4,6 +4,7 @@ import { getTestStartTime, getTimeLeft, setTimer, setTimerStarted, isTimerStarte
 import { validateCharacter, resetDisplayTextColor } from './character_validator.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    const typingWrapper = document.getElementById('typing-wrapper');
     const textContent = document.getElementById('text-content');
     const textDisplayChars = document.querySelectorAll('.char');
     const typingInput = document.getElementById('typing-input');
@@ -13,9 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const timer = document.getElementById("timer");
 
     let currentLine = 0;
-    const lineHeight = 60;
 
-    document.addEventListener('click', () => typingInput.focus());
+    typingWrapper.addEventListener('click', () => typingInput.focus());
 
     function initializeTest() {
         if (localStorage.getItem('clickedReplay') === 'true') {
