@@ -4,12 +4,16 @@ import { getTestStartTime, getTimeLeft, setTimer, setTimerStarted, isTimerStarte
 import { validateCharacter, resetDisplayTextColor } from './character_validator.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    const textContent = document.getElementById('text-content');
     const textDisplayChars = document.querySelectorAll('.char');
     const typingInput = document.getElementById('typing-input');
     const wordsPerMinuteDisplay = document.getElementById("wpm");
     const accuracyDisplay = document.getElementById("accuracy");
     const timeDisplay = document.getElementById("time");
     const timer = document.getElementById("timer");
+
+    let currentLine = 0;
+    const lineHeight = 60;
 
     document.addEventListener('click', () => typingInput.focus());
 
@@ -52,6 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetTest() {
+        currentLine = 0; 
+        if (textContent) {
+            textContent.style.transform = `translateY(0px)`; 
+        }
         setTimer(timer.value);
         setTimerStarted(false);
         typingInput.disabled = false;
@@ -115,6 +123,21 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         }
         validateCharacter(textDisplayChars, typingInput);
+
+        const currentIndex = typingInput.value.length;
+        const currentCharEl = textDisplayChars[currentIndex];
+
+        if (currentCharEl) {
+            const actualLineHeight = currentCharEl.offsetHeight;
+            const charTop = currentCharEl.offsetTop;
+            
+            const lineIndex = Math.floor(charTop / actualLineHeight);
+
+            const currentBlock = Math.floor(lineIndex / 3);
+            const scrollOffset = currentBlock * (actualLineHeight * 3);
+
+            textContent.style.transform = `translateY(-${scrollOffset}px)`;
+        }
         
         // Update WPM and accuracy in real-time as user types
         if (isTimerStarted()) {

@@ -76,10 +76,20 @@ a {
 }
 
 #typing-wrapper {
-    padding: 2rem;
     position: relative;
-    font-size: 1.5rem;
-    line-height: 3rem;
+    height: 180px;       
+    overflow: hidden;    
+    line-height: 60px;   
+    border: 1px solid transparent;
+}
+
+#text-content {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 0;
+    position: relative;
+    transition: transform 0.2s ease; 
 }
 
 #typing-input {
@@ -90,9 +100,11 @@ a {
 }
 
 .char{
-    color: gray;
     display: inline-block;
-    letter-spacing: -7px;
+    height: 60px;
+    line-height: 60px;
+    margin: 0;
+    padding: 0 1px;
 }
 
 
