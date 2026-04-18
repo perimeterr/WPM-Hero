@@ -4,12 +4,18 @@ import { getTestStartTime, getTimeLeft, setTimer, setTimerStarted, isTimerStarte
 import { validateCharacter, resetDisplayTextColor } from './character_validator.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+    const typingWrapper = document.getElementById('typing-wrapper');
+    const textContent = document.getElementById('text-content');
     const textDisplayChars = document.querySelectorAll('.char');
     const typingInput = document.getElementById('typing-input');
     const wordsPerMinuteDisplay = document.getElementById("wpm");
     const accuracyDisplay = document.getElementById("accuracy");
     const timeDisplay = document.getElementById("time");
     const timer = document.getElementById("timer");
+
+    let currentLine = 0;
+
+    typingWrapper.addEventListener('click', () => typingInput.focus());
 
     function initializeTest() {
         if (localStorage.getItem('clickedReplay') === 'true') {
@@ -19,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 timer.value = savedSettings.timer;
                 setTimer(timer.value);
                 timeDisplay.textContent = getTimeLeft();
-                accuracyDisplay.textContent = "100.00%";
+                accuracyDisplay.textContent = "100.00";
                 wordsPerMinuteDisplay.textContent = "0.00";
                 
                 // Restore display text
@@ -32,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         setTimer(timer.value);
         timeDisplay.textContent = getTimeLeft();
-        accuracyDisplay.textContent = "100.00%";
+        accuracyDisplay.textContent = "100.00";
         wordsPerMinuteDisplay.textContent = "0.00";
     }
     
@@ -46,10 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateAccuracyDisplay(accuracy) {
-        accuracyDisplay.textContent = accuracy.toFixed(2) + '%';
+        accuracyDisplay.textContent = accuracy.toFixed(2);
     }
 
     function resetTest() {
+        currentLine = 0; 
+        if (textContent) {
+            textContent.style.transform = `translateY(0px)`; 
+        }
         setTimer(timer.value);
         setTimerStarted(false);
         typingInput.disabled = false;
@@ -113,13 +123,28 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         }
         validateCharacter(textDisplayChars, typingInput);
+
+        const currentIndex = typingInput.value.length;
+        const currentCharEl = textDisplayChars[currentIndex];
+
+        if (currentCharEl) {
+            const actualLineHeight = currentCharEl.offsetHeight;
+            const charTop = currentCharEl.offsetTop;
+            
+            const lineIndex = Math.floor(charTop / actualLineHeight);
+
+            const currentBlock = Math.floor(lineIndex / 3);
+            const scrollOffset = currentBlock * (actualLineHeight * 3);
+
+            textContent.style.transform = `translateY(-${scrollOffset}px)`;
+        }
         
         // Update WPM and accuracy in real-time as user types
         if (isTimerStarted()) {
             const wpm = getWordsPerMinute(getCorrectIndicesSize(), getTestStartTime());
             const accuracy = getRealTimeAccuracy();
             wordsPerMinuteDisplay.textContent = wpm.toFixed(2);
-            accuracyDisplay.textContent = accuracy.toFixed(2) + '%';
+            accuracyDisplay.textContent = accuracy.toFixed(2);
         }
     });
 });

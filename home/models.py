@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 
 class TestText(models.Model):
     content = models.TextField()
@@ -9,6 +10,8 @@ class TestText(models.Model):
         ('medium', 'Medium'),
         ('hard', 'Hard'),
     ])
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True,
+    )
 
 class Test(models.Model):
     text = models.ForeignKey(TestText, on_delete=models.CASCADE)
@@ -30,7 +33,7 @@ class TestResult(models.Model):
         blank=True, 
     )
 
-    date_taken = models.DateTimeField(auto_now_add=True)
+    date_taken = models.DateTimeField(default=timezone.now)
 
     class Meta:
         ordering = ['-date_taken']

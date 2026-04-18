@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}WPM Hero | Profile{% endblock %}
+
+{% block content %}
+<a href="{% url 'accounts:edit_profile' %}">Edit Profile</a>
+<a href="{% url 'home:home' %}">Back to Typing Test</a>
+<h2>Basic Statistics</h2>
+<list>
+    <ul>Total Tests Taken: {{ tests_count }}</ul>
+    <ul>
+        <form method="get" action="{% url 'accounts:profile_dashboard' %}">
+        <label for="time-filter">Display Time in:</label>
+        <select id="time-filter" name="time-filter" onchange="this.form.submit()">
+            <option value="seconds" {% if selected_time_filter == 'seconds' %}selected{% endif %}>Seconds</option>
+            <option value="minutes" {% if selected_time_filter == 'minutes' %}selected{% endif %}>Minutes</option>
+            <option value="hours" {% if selected_time_filter == 'hours' %}selected{% endif %}>Hours</option>
+        </select>
+</form>
+    </ul>
+    <ul>Total Time Spent: {{ total_time }} {{ selected_time_filter }}</ul>
+</list>
+
+<hr>
+<h2>Personal Records</h2>
+
+{% if personal_records %}
+<table border="1" cellpadding="10">
+    <thead>
+        <tr>
+            <th>Difficulty</th>
+            <th>Timer</th>
+            <th>Highest WPM</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in personal_records %}
+        <tr>
+            <td>{{ record.test__text__difficulty|title }}</td>
+            <td>{{ record.test__duration_seconds }} seconds</td>
+            <td>{{ record.best_wpm }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No personal records yet.</p>
+{% endif %}
+
+<hr>
+<h2>Overall Performance Metrics</h2>
+
+{% if overall_metrics %}
+    <table border="1" cellpadding="10" cellspacing="0" style="font-size:1.1rem; width:240px; table-layout:fixed; border-width:2px;">
+        <colgroup>
+            <col style="width:120px;">  
+            <col style="width:120px;">   
+        </colgroup>
+        <thead>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Highest WPM</td>
+                <td>{{ overall_metrics.highest_wpm|default:"N/A" }}</td>
+            </tr>
+            <tr>
+                <td>Average WPM</td>
+                <td>{{ overall_metrics.average_wpm|floatformat:2|default:"N/A" }}</td>
+            </tr>
+            <tr>
+                <td>Highest Accuracy</td>
+                <td>{{ overall_metrics.highest_accuracy|default:"N/A" }}%</td>
+            </tr>
+            <tr>
+                <td>Average Accuracy</td>
+                <td>{{ overall_metrics.average_accuracy|floatformat:2|default:"N/A" }}%</td>
+            </tr>
+        </tbody>
+    </table>
+{% else %}
+    <p>No Performance Metrics yet.</p>
+{% endif %}
+
+<hr>
+<h2>Progress Visualization</h2>
+<form method="get" action="{% url 'accounts:profile_dashboard' %}">
+    <label for="chart-filter">Filter Test Results:</label>
+    <select id="chart-filter" name="filter" onchange="this.form.submit()">
+        <option value="1" {% if selected_chart_filter == '1' %}selected{% endif %}>Last 24 hours</option>
+        <option value="7" {% if selected_chart_filter == '7' %}selected{% endif %}>Last 7 days</option>
+        <option value="30" {% if selected_chart_filter == '30' %}selected{% endif %}>Last 30 days</option>
+        <option value="90" {% if selected_chart_filter == '90' %}selected{% endif %}>Last 90 days</option>
+        <option value="180" {% if selected_chart_filter == '180' %}selected{% endif %}>Last 180 days</option>
+        <option value="365" {% if selected_chart_filter == '365' %}selected{% endif %}>Last 365 days</option>
+        <option value="all" {% if selected_chart_filter == 'all' %}selected{% endif %}>All time</option>
+    </select>
+</form>
+{% if tests_count %}
+    <div style="max-width: 800px;">
+        <canvas id="progressChart" aria-label="WPM progress chart"></canvas>
+    </div>
+    {{ progress_data_dates|json_script:"progress-data-dates" }}
+    {{ progress_data_wpm|json_script:"progress-data-wpm" }}
+{% else %}
+    <p>No test history yet. Complete tests to see your progress chart.</p>
+{% endif %}
+
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const chartCanvas = document.getElementById('progressChart');
+
+        if (chartCanvas) {
+            const labels = JSON.parse(document.getElementById('progress-data-dates').textContent);
+            const wpmData = JSON.parse(document.getElementById('progress-data-wpm').textContent);
+
+            new Chart(chartCanvas.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'WPM Over Time',
+                        data: wpmData,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            },
+                            ticks: {
+                                display: false
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'WPM'
+                            },
+                            ticks: {
+                                display: false
+                            },
+                            grid: {
+                                display: false,
+                                drawBorder: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `WPM: ${context.parsed.y}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+{% endblock %}

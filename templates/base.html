@@ -11,21 +11,28 @@
 </head>
 <body>
     <div class="header">
-        <h1>WPM Hero</h1>
-    
+        <div class="logo">
+            <h1>
+                <a href="{% url 'home:home' %}">
+                WPM
+                <span id="logo-hero">Hero</span>
+                </a>
+            </h1>
+        </div>
         {% if user.is_authenticated %}
         <div class="user-info">
-            <span>Logged in as: {{ user.username }}</span>
+            <a href="{% url 'accounts:profile_dashboard' %}">{{ user.username }}</a>
             <form method="post" action="{% url 'accounts:logout' %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit">Logout</button>
             </form>
-            <a href="{% url 'accounts:edit_profile' %}">Edit Profile</a>
+            {% else %}
+            <a href="{% url 'accounts:login' %}">Login</a>
+            {% endif %}
+            
         </div>
-        {% else %}
-            <a href="{% url 'accounts:login' %}"><button>Login</button></a>
-            <a href="{% url 'accounts:register' %}"><button>Register</button></a>
-        {% endif %}
+        
+        
     </div>
     {% block content %}
     {% endblock %}

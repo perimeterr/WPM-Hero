@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}WPM Hero | Create Custom Text{% endblock %}
+{% block content %}
+<h2>Create Custom Text</h2>
+
+{% if error %}
+    <p style="color: red;">{{ error }}</p>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label for="content">Text:</label><br>
+    <textarea name="content" id="content" rows="6" cols="50" required>{{ content|default:'' }}</textarea>
+
+    <p>Word count: <span id="word-count">0</span> (Min: 60, Max: 600)</p>
+
+    <label for="difficulty">Difficulty:</label><br>
+    <select name="difficulty" id="difficulty">
+        <option value="easy" {% if difficulty == "easy" %}selected{% endif %}>Easy</option>
+        <option value="medium" {% if difficulty == "medium" %}selected{% endif %}>Medium</option>
+        <option value="hard" {% if difficulty == "hard" %}selected{% endif %}>Hard</option>
+    </select><br><br>
+
+    <button type="submit">Save Custom Text</button>
+</form>
+
+<script>
+const textarea = document.getElementById('content');
+const wordCountDisplay = document.getElementById('word-count');
+
+function updateWordCount() {
+    const text = textarea.value.trim();
+    const words = text.split(/\s+/).filter(word => word.length > 0);
+    const count = words.length;
+
+    wordCountDisplay.textContent = count;
+
+    if (count < 60 || count > 600) {
+        wordCountDisplay.style.color = "red";
+    } else {
+        wordCountDisplay.style.color = "green";
+    }
+}
+
+updateWordCount();
+
+textarea.addEventListener('input', updateWordCount);
+</script>
+
+{% endblock %}

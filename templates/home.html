@@ -4,39 +4,54 @@
 {% block title %}WPM Hero{% endblock %}
 
 {% block content %}
-    <div class="settings-panel">
-        <form method="GET">
-            <label>Difficulty:</label>
-            <select id="difficulty" name="difficulty" onchange="this.form.submit()">
-                <option value="easy" {% if test_text.difficulty == "easy" %}selected{% endif %}>Easy</option>
-                <option value="medium" {% if test_text.difficulty == "medium" %}selected{% endif %}>Medium</option>
-                <option value="hard" {% if test_text.difficulty == "hard" %}selected{% endif %}>Hard</option>
-            </select>
-            <label>Timer:</label>
-            <select id="timer" name="timer" onchange="this.form.submit()">
-                <option value="60" {% if test_timer.selected_timer == "60" %}selected{% endif %}>60</option>
-                <option value="30" {% if test_timer.selected_timer == "30" %}selected{% endif %}>30</option>
-                <option value="15" {% if test_timer.selected_timer == "15" %}selected{% endif %}>15</option>
-            </select>
-        </form>
-    </div>
-
-    <div id="text-content" class="text-display">
+    <main>
+        <div class="top-panel">
+            
+            <div class="panel-wpm">
+                <p><span id="wpm">0</span> wpm</p>
+            </div>
+            
+            <div class="timer"><span id="time">0s</span></div>
+            <div class="panel-accuracy">
+                <span id="accuracy">0%</span>
+            </div>
+            
+            
+        </div>
+        <div class="settings-panel">
+            <form method="GET">
+                <label>Difficulty:</label>
+                <select id="difficulty" name="difficulty" onchange="this.form.submit()">
+                    <option value="easy" {% if test_text.difficulty == "easy" %}selected{% endif %}>Easy</option>
+                    <option value="medium" {% if test_text.difficulty == "medium" %}selected{% endif %}>Medium</option>
+                    <option value="hard" {% if test_text.difficulty == "hard" %}selected{% endif %}>Hard</option>
+                </select>
+                <label>Timer:</label>
+                <select id="timer" name="timer" onchange="this.form.submit()">
+                    <option value="60" {% if test_timer.selected_timer == "60" %}selected{% endif %}>60</option>
+                    <option value="30" {% if test_timer.selected_timer == "30" %}selected{% endif %}>30</option>
+                    <option value="15" {% if test_timer.selected_timer == "15" %}selected{% endif %}>15</option>
+                </select>
+                {% if user.is_authenticated %}
+                <label>Custom Text:</label>
+                <select id="custom-text" name="custom-text" onchange="this.form.submit()">
+                    <option value="">None</option>
+                    {% for text in test_text.all_custom_texts %}
+                    <option value="{{ text.id }}">{{ text.content|truncatechars:30 }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+            </form>
+        </div>
+        
+    </main>
+    
+    <div id="typing-wrapper">
+        <input type="text" id="typing-input" autofocus />
+        <div id="text-content" class="text-display">
         {% for char in test_text.display_text %}
             <span class="char">{% if char == " " %}&nbsp;{% else %}{{ char }}{% endif %}</span>
         {% endfor %}
-    </div>
-
-    <hr>
-    <div class="timer"><span id="time">0s</span></div>
-    <div class="typing-area">
-        <h3>Start Typing Below:</h3>
-        <textarea id="typing-input" placeholder="Start typing here..."></textarea>
-
-        <div id="results" class="results-display">
-            <p>WPM: <span id="wpm">0</span></p>
-            <p>Accuracy: <span id="accuracy">0%</span></p>
-        </div>
     </div>
     
 {% endblock %}
