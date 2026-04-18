@@ -32,6 +32,15 @@
                     <option value="30" {% if test_timer.selected_timer == "30" %}selected{% endif %}>30</option>
                     <option value="15" {% if test_timer.selected_timer == "15" %}selected{% endif %}>15</option>
                 </select>
+                {% if user.is_authenticated %}
+                <label>Custom Text:</label>
+                <select id="custom-text" name="custom-text" onchange="this.form.submit()">
+                    <option value="">None</option>
+                    {% for text in test_text.all_custom_texts %}
+                    <option value="{{ text.id }}">{{ text.content|truncatechars:30 }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
             </form>
         </div>
         
