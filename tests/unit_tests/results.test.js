@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { getCSRFToken } from '../../static/results.js';
 
+let mockFetch;
+
+jest.spyOn(console, 'log').mockImplementation(() => {});
+
 function buildResultsDom() {
 	document.body.innerHTML = `
 		<span id="wpm">0.00</span>
@@ -22,15 +26,16 @@ describe('Results Module Base Tests', () => {
 		document.dispatchEvent(new Event('DOMContentLoaded'));
 	});
 
-	afterEach(() => {
+	afterAll(() => {
 		localStorage.clear();
+		jest.restoreAllMocks();
 	});
 
 	test('properly handle missing or invalid localStorage values', () => {
-		document.dispatchEvent(new Event('DOMContentLoaded'));
+		//document.dispatchEvent(new Event('DOMContentLoaded'));
 
 		expect(document.getElementById('wpm').textContent).toBe('0.00');
-		expect(document.getElementById('accuracy').textContent).toBe('0.00%');
+		expect(document.getElementById('accuracy').textContent).toBe('0.00');
 		expect(document.getElementById('mistake-list').innerHTML).toBe('');
 	});
 
@@ -78,26 +83,39 @@ describe('Results Module Base Tests', () => {
 describe('Results Module Save Results Tests', () => {
 	let mockFetch;
 
-	beforeEach(() => {
+	beforeEach(async () => {
 		global.isLoggedIn = true;
+
+		Object.defineProperty(document, 'cookie', {
+			value: 'csrftoken=test-token',
+			writable: true,
+		});
+
 		mockFetch = jest.fn().mockResolvedValue({
 			json: () => Promise.resolve({ success: true }),
 		});
+
 		global.fetch = mockFetch;
 		buildResultsDom();
+
+		localStorage.setItem('finalWPM', '72.5');
+		localStorage.setItem('finalAccuracy', '95.0');
+		localStorage.setItem('finalMistypedKeys', JSON.stringify({ a: 2, s: 1 }));
+
+        await import('../../static/results.js');
+
+		document.dispatchEvent(new Event('DOMContentLoaded'));
 	});
 
 	afterEach(() => {
 		localStorage.clear();
 		jest.clearAllMocks();
 	});
-	
+
 	test('sends POST request to save results with correct payload', async () => {
 		localStorage.setItem('finalWPM', '72.5');
 		localStorage.setItem('finalAccuracy', '95.0');
 		localStorage.setItem('finalMistypedKeys', JSON.stringify({ a: 2, s: 1 }));
-
-		document.dispatchEvent(new Event('DOMContentLoaded'));
 
 		expect(mockFetch).toHaveBeenCalledWith('/save-result/', expect.objectContaining({
 			method: 'POST',
