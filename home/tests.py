@@ -83,6 +83,45 @@ class CustomTextTests(TestCase):
         self.client.get(reverse('home:home'), {'difficulty': 'medium'})
         self.assertNotContains(self.client.get(reverse('home:home')), valid_text.strip())
 
+    def test_user_can_save_multiple_custom_texts(self):
+        text1 = ('apple ' * 60).strip()
+        text2 = ('banana ' * 60).strip()
+        text3 = ('cherry ' * 60).strip()
+
+        self.client.post(
+            reverse('home:customtext'),
+            {
+                'content': text1,
+                'difficulty': 'easy',
+            }
+        )
+
+        self.client.post(
+            reverse('home:customtext'),
+            {
+                'content': text2,
+                'difficulty': 'medium',
+            }
+        )
+
+        self.client.post(
+            reverse('home:customtext'),
+            {
+                'content': text3,
+                'difficulty': 'hard',
+            }
+        )
+
+        self.assertEqual(TestText.objects.count(), 3)
+
+        user_texts = TestText.objects.filter(created_by=self.user)
+        self.assertEqual(user_texts.count(), 3)
+
+        contents = list(user_texts.values_list('content', flat=True))
+        self.assertIn(text1, contents)
+        self.assertIn(text2, contents)
+        self.assertIn(text3, contents)
+
 class WebsiteIntegrationTests(TestCase):
     def test_home_page_contains_difficulty_options(self):
         response = self.client.get(reverse('home:home'))
