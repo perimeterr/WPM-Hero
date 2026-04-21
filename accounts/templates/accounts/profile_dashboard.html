@@ -38,6 +38,7 @@
 
 <div class="section">
     <div class="section-label">Personal Records</div>
+    {% if personal_records %}
     <div class="pr-card">
     <table class="pr-table">
         <thead>
@@ -48,69 +49,30 @@
         </tr>
         </thead>
         <tbody>
+        {% for record in personal_records %}
         <tr>
-            <td><span class="badge badge-easy">Easy</span></td>
-            <td style="color:var(--muted)">15 seconds</td>
-            <td><span class="wpm-val">112</span></td>
+            {% if record.test__text__difficulty == "easy" %}
+                <td><span class="badge badge-easy">{{ record.test__text__difficulty|title }}</span></td>
+                <td style="color:var(--muted)">{{ record.test__duration_seconds }} seconds</td>
+                <td><span class="wpm-val">{{ record.best_wpm }}</span></td>
+            {% elif record.test__text__difficulty == "medium" %}
+                <td><span class="badge badge-medium">{{ record.test__text__difficulty|title }}</span></td>
+                <td style="color:var(--muted)">{{ record.test__duration_seconds }} seconds</td>
+                <td><span class="wpm-val">{{ record.best_wpm }}</span></td>
+            {% else %}
+                <td><span class="badge badge-hard">{{ record.test__text__difficulty|title }}</span></td>
+                <td style="color:var(--muted)">{{ record.test__duration_seconds }} seconds</td>
+                <td><span class="wpm-val">{{ record.best_wpm }}</span></td>
+            {% endif %}
         </tr>
-        <tr>
-            <td><span class="badge badge-medium">Medium</span></td>
-            <td style="color:var(--muted)">30 seconds</td>
-            <td><span class="wpm-val">94</span></td>
-        </tr>
-        <tr>
-            <td><span class="badge badge-hard">Hard</span></td>
-            <td style="color:var(--muted)">60 seconds</td>
-            <td><span class="wpm-val">78</span></td>
-        </tr>
+        {% endfor %}
         </tbody>
     </table>
     </div>
+    {% else %}
+    <p>No personal records yet.</p>
+    {% endif %}
 </div>
-</div>
-
-
-<h2>Basic Statistics</h2>
-<list>
-    <ul>Total Tests Taken: {{ tests_count }}</ul>
-    <ul>
-        <form method="get" action="{% url 'accounts:profile_dashboard' %}">
-        <label for="time-filter">Display Time in:</label>
-        <!-- <select id="time-filter" name="time-filter" onchange="this.form.submit()">
-            <option value="seconds" {% if selected_time_filter == 'seconds' %}selected{% endif %}>Seconds</option>
-            <option value="minutes" {% if selected_time_filter == 'minutes' %}selected{% endif %}>Minutes</option>
-            <option value="hours" {% if selected_time_filter == 'hours' %}selected{% endif %}>Hours</option>
-        </select> -->
-</form>
-    </ul>
-    <ul>Total Time Spent: {{ total_time }} {{ selected_time_filter }}</ul>
-</list>
-
-<hr>
-<h2>Personal Records</h2>
-
-{% if personal_records %}
-<table border="1" cellpadding="10">
-    <thead>
-        <tr>
-            <th>Difficulty</th>
-            <th>Timer</th>
-            <th>Highest WPM</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for record in personal_records %}
-        <tr>
-            <td>{{ record.test__text__difficulty|title }}</td>
-            <td>{{ record.test__duration_seconds }} seconds</td>
-            <td>{{ record.best_wpm }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>No personal records yet.</p>
-{% endif %}
 
 <hr>
 <h2>Overall Performance Metrics</h2>
