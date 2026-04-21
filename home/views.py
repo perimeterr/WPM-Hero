@@ -69,15 +69,10 @@ def results(request):
     # Get the difficulty and timer from query parameters
     difficulty = request.GET.get('difficulty', 'easy')
     timer = request.GET.get('timer', '60')
-    previous_results = []
-    if request.user.is_authenticated:
-        previous_results = TestResult.objects.filter(user=request.user).select_related('test', 'test__text')[:10]
-
+    
     ctx = {
         'difficulty': difficulty,
         'timer': timer,
-        'is_logged_in': request.user.is_authenticated,
-        'previous_results': previous_results,
     }
     
     return render(request, 'results.html', ctx)
