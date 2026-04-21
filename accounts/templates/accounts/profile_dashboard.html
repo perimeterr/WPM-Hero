@@ -104,6 +104,20 @@
         <p>No performance metrics yet.</p>
         {% endif %}
     </div>
+      
+    <div class="section">
+      <div class="section-label">Weakness Analysis</div>
+        <div class="weakness-card">
+          <div id="keyboard"></div>
+          <div class="legend">
+          <span>Error rate</span>
+          <div>
+              <div class="legend-bar" id="legend-bar"></div>
+              <div class="legend-ends"><span>0%</span><span>50%+</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="section">
         <div class="section-label">Progress Visualization</div>
@@ -129,15 +143,14 @@
             </select>
         </form>
     </div>
-    
-    
 </div>
-
-
-
 {% endblock %}
 
 {% block extra_js %}
+    <script>
+        const errorData = {{ error_data|safe }};
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'frontend.js' %}"></script>
+    <script src="{% static 'weakness_analysis.js' %}"></script>
 {% endblock %}

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.db.models import Sum, Max, Avg
 from django.utils import timezone
 from datetime import timedelta
+from collections import Counter
 from .forms import UserLoginForm, UserRegistrationForm, UserUpdateForm
 from home.models import TestResult
 
@@ -96,6 +97,19 @@ def profile_dashboard(request):
         average_accuracy=Avg('accuracy')
     )
 
+    all_mistypes = test_results.values_list('mistyped_keys', flat=True)
+
+    global_mistypes = Counter()
+    for entry in all_mistypes:
+        if entry: # Ensure it's not None
+            global_mistypes.update(entry)
+
+    total_tests = test_results.count() or 1
+
+    error_data = {}
+    for key, count in global_mistypes.items():
+        error_data[key] = round((count / total_tests), 1)
+
     chronological_chart_results = chart_results.order_by('date_taken')
     progress_data_dates = []
     for result in chronological_chart_results:
@@ -112,7 +126,8 @@ def profile_dashboard(request):
         'progress_data_dates': progress_data_dates,
         'progress_data_wpm': progress_data_wpm,
         'selected_chart_filter': chart_filter,
-        'last_test': last_test
+        'last_test': last_test,
+        'error_data': error_data
     }
 
     return render(request, 'accounts/profile_dashboard.html', ctx)
