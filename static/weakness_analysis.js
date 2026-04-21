@@ -34,6 +34,27 @@ export function buildTooltipHTML(key, pct) {
     };
 }
 
+export function renderTooltip(keyEl, key, pct) {
+    const tip = document.createElement('div');
+    tip.className = 'tooltip';
+
+    const isAlpha = key.length === 1 && key.match(/[a-zA-Z]/);
+    const displayKey = isAlpha ? key.toUpperCase() : key;
+
+    tip.innerHTML = `
+        <div class="tt-key">${displayKey}</div>
+        <div class="tt-err" style="color:${errColor(pct * 1.2)}">${pct}% error rate</div>
+        <div class="tt-sub">${getErrorLabel(pct)}</div>
+    `;
+
+    keyEl.appendChild(tip);
+
+    keyEl.addEventListener('mouseenter', () => tip.classList.add('visible'));
+    keyEl.addEventListener('mouseleave', () => tip.classList.remove('visible'));
+
+    return tip;
+}
+
 export function renderKeyboard(rows, errorData, container) {
     rows.forEach(row => {
         const rowEl = document.createElement('div');
@@ -50,8 +71,28 @@ export function renderKeyboard(rows, errorData, container) {
             label.className = 'key-label';
             label.textContent = l;
             keyEl.appendChild(label);
+
+            if (pct !== undefined && pct > 0) {
+                renderTooltip(keyEl, k, pct);
+            }
+
             rowEl.appendChild(keyEl);
         });
         container.appendChild(rowEl);
+    });
+}
+
+export function renderLegend(containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const stops = [0, 10, 20, 30, 40, 50];
+
+    stops.forEach((s, i) => {
+        if (i === stops.length - 1) return;
+        const seg = document.createElement('div');
+        seg.className = 'legend-seg';
+        seg.style.background = errColor((stops[i] + stops[i + 1]) / 2);
+        container.appendChild(seg);
     });
 }
