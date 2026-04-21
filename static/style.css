@@ -43,6 +43,13 @@ a {
     color: inherit;
 }
 
+.page { 
+    max-width:860px; 
+    display:flex; 
+    flex-direction:column; 
+    gap:20px; 
+}
+
 #logo-hero {
     color: var(--red);
 }
@@ -305,7 +312,8 @@ a {
 .stats-row { 
     display: grid; 
     grid-template-columns: 
-    repeat(6, 1fr); gap: 12px; 
+    repeat(6, 1fr); 
+    gap: 12px; 
 }
 
 .stat-card { 
@@ -423,5 +431,118 @@ a {
 .badge-hard { 
     background:rgba(162,45,45,0.2); 
     color:#F09595; 
+}
+
+kbd-wrap{
+    position:relative;
+    width:100%;
+}
+
+.kbd-row{
+    display:flex;
+    gap:5px;
+    margin-bottom:5px;
+    justify-content:flex-start;
+}
+
+.key{
+    position:relative;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:7px;height:42px;min-width:38px;
+    font-size:12px;font-weight:500;color:#fff;
+    border:0.5px solid rgba(255,255,255,0.12);
+    cursor:pointer;user-select:none;
+    transition:border-color .15s,transform .1s;
+    flex-shrink:0;
+}
+
+.key:hover{
+    border-color:rgba(255,255,255,0.35);
+    transform:translateY(-1px);
+}
+
+.key.wide-15{
+    min-width:56px;
+}
+
+.key.wide-18{
+    min-width:68px;
+}
+
+.key.wide-22{
+    min-width:84px;
+}
+
+.key.wide-28{
+    min-width:108px;
+}
+
+.key.wide-65{
+    min-width:240px;
+}
+
+.key-label{
+    font-size:11px;line-height:1;pointer-events:none;
+}
+
+.tooltip{
+    position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+    background:#1a1718;border:0.5px solid rgba(255,255,255,0.18);
+    border-radius:8px;padding:8px 12px;pointer-events:none;
+    white-space:nowrap;z-index:10;opacity:0;transition:opacity .12s;
+    font-size:12px;text-align:center;min-width:90px;
+}
+
+.tooltip.visible{
+    opacity:1;
+}
+
+.tt-key{
+    font-size:15px;
+    font-weight:700;
+    margin-bottom:3px;
+}
+
+.tt-err{
+    font-size:13px;
+    font-weight:600;
+}
+
+.tt-sub{
+    font-size:11px;
+    color:rgba(255,255,255,0.5);
+    margin-top:2px;
+}
+
+.legend{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:14px;
+    font-size:11px;
+    color:rgba(255,255,255,0.45);
+}
+
+.legend-bar{
+    display:flex;
+    height:8px;
+    border-radius:4px;
+    overflow:hidden;
+    width:140px;
+    gap:1px;
+}
+
+.legend-seg{
+    flex:1;
+    border-radius:0;
+}
+
+.legend-ends{
+    display:flex;
+    justify-content:space-between;
+    width:140px;
+    font-size:10px;
+    color:rgba(255,255,255,0.35);
+    margin-top:3px;
 }
 
