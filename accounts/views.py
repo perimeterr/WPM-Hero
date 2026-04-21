@@ -98,17 +98,26 @@ def profile_dashboard(request):
     )
 
     all_mistypes = test_results.values_list('mistyped_keys', flat=True)
+    all_corrects = test_results.values_list('correct_keys', flat=True)
 
     global_mistypes = Counter()
+    global_corrects = Counter()
+
     for entry in all_mistypes:
-        if entry: # Ensure it's not None
+        if entry:
             global_mistypes.update(entry)
 
-    total_tests = test_results.count() or 1
+    for entry in all_corrects:
+        if entry:
+            global_corrects.update(entry)
 
     error_data = {}
-    for key, count in global_mistypes.items():
-        error_data[key] = round((count / total_tests), 1)
+    for key in global_mistypes:
+        wrong   = global_mistypes[key]
+        correct = global_corrects.get(key, 0)
+        total   = wrong + correct
+        if total > 0:
+            error_data[key] = round((wrong / total) * 100, 1)
 
     chronological_chart_results = chart_results.order_by('date_taken')
     progress_data_dates = []

@@ -28,6 +28,10 @@ class TestResult(models.Model):
         default=dict, 
     )
 
+    correct_keys = models.JSONField(
+        default=dict,
+    )
+
     wpm_history = models.JSONField(
         default=list, 
         blank=True, 
