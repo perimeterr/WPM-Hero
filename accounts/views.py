@@ -60,8 +60,6 @@ def profile_dashboard(request):
     test_results = TestResult.objects.filter(user=request.user)
     tests_count = test_results.count()
 
-   
-
     DEFAULT_FILTER_DAYS = '30'
     chart_filter = request.GET.get('filter', DEFAULT_FILTER_DAYS)
     allowed_ = {'1', '7', '30', '90', '180', '365', 'all'}
@@ -84,6 +82,8 @@ def profile_dashboard(request):
         actual_time = round(actual_time/60, 2)
     elif time_filter == 'hours':
         actual_time = round (actual_time/3600, 2)
+
+    last_test = test_results.order_by('-date_taken').first()
 
     personal_records = (
         test_results
@@ -116,6 +116,7 @@ def profile_dashboard(request):
         'progress_data_dates': progress_data_dates,
         'progress_data_wpm': progress_data_wpm,
         'selected_chart_filter': chart_filter,
+        'last_test': last_test
     }
 
     return render(request, 'accounts/profile_dashboard.html', ctx)

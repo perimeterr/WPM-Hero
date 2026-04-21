@@ -3,19 +3,86 @@
 {% block title %}WPM Hero | Profile{% endblock %}
 
 {% block content %}
-<a href="{% url 'accounts:edit_profile' %}">Edit Profile</a>
-<a href="{% url 'home:home' %}">Back to Typing Test</a>
+<div class="section">
+    <div class="section-label">Current Performance</div>
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-label">Tests Taken</div>
+            <div class="stat-value">{{ tests_count }}</div>
+            <div class="stat-accent"></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Total Time Spent</div>
+            <div class="stat-value-container">
+                <div class="stat-value">{{ total_time }}</div>
+                <form method="get" action="{% url 'accounts:profile_dashboard' %}" class="inline-form">
+                <select id="time-filter" name="time-filter" class="inline-select" onchange="this.form.submit()">
+                    <option value="seconds" {% if selected_time_filter == 'seconds' %}selected{% endif %}>Seconds</option>
+                    <option value="minutes" {% if selected_time_filter == 'minutes' %}selected{% endif %}>Minutes</option>
+                    <option value="hours" {% if selected_time_filter == 'hours' %}selected{% endif %}>Hours</option>
+                </select>
+                </form>
+            </div>
+            
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Current WPM</div>
+            <div class="stat-value"> {{ last_test.wpm | floatformat:0 }} </div>
+            <div class="stat-accent"></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Current Acucracy</div>
+            <div class="stat-value"> {{ last_test.accuracy }}% </div>
+            <div class="stat-accent"></div>
+        </div>
+        
+    </div>
+
+    <div class="section">
+        <div class="section-label">Personal Records</div>
+        <div class="pr-card">
+        <table class="pr-table">
+            <thead>
+            <tr>
+                <th>Difficulty</th>
+                <th>Timer</th>
+                <th>Best WPM</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><span class="badge badge-easy">Easy</span></td>
+                <td style="color:var(--muted)">15 seconds</td>
+                <td><span class="wpm-val">112</span></td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-medium">Medium</span></td>
+                <td style="color:var(--muted)">30 seconds</td>
+                <td><span class="wpm-val">94</span></td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-hard">Hard</span></td>
+                <td style="color:var(--muted)">60 seconds</td>
+                <td><span class="wpm-val">78</span></td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+
+
 <h2>Basic Statistics</h2>
 <list>
     <ul>Total Tests Taken: {{ tests_count }}</ul>
     <ul>
         <form method="get" action="{% url 'accounts:profile_dashboard' %}">
         <label for="time-filter">Display Time in:</label>
-        <select id="time-filter" name="time-filter" onchange="this.form.submit()">
+        <!-- <select id="time-filter" name="time-filter" onchange="this.form.submit()">
             <option value="seconds" {% if selected_time_filter == 'seconds' %}selected{% endif %}>Seconds</option>
             <option value="minutes" {% if selected_time_filter == 'minutes' %}selected{% endif %}>Minutes</option>
             <option value="hours" {% if selected_time_filter == 'hours' %}selected{% endif %}>Hours</option>
-        </select>
+        </select> -->
 </form>
     </ul>
     <ul>Total Time Spent: {{ total_time }} {{ selected_time_filter }}</ul>
