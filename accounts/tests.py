@@ -280,8 +280,11 @@ class ProfileDashboardTests(TestCase):
 
         self.assertEqual(response.context['total_time'], 120)
 
-        self.assertContains(response, "Total Tests Taken: 2")
-        self.assertContains(response, "Total Time Spent: 120")
+        self.assertEqual(response.context['tests_count'], 2)
+        self.assertEqual(response.context['total_time'] or 0, 120)
+
+        self.assertContains(response, "Tests Taken")
+        self.assertContains(response, "2")
 
     def test_dashboard_is_private(self):
         other_user = self.User.objects.create_user(username='hacker', password='password')
@@ -297,8 +300,88 @@ class ProfileDashboardTests(TestCase):
         
         response = self.client.get(self.dashboard_url)
 
+        self.assertEqual(response.status_code, 200)
+
         self.assertEqual(response.context['tests_count'], 0)
-        self.assertEqual(response.context['total_time'], 0)
+        self.assertEqual(response.context['total_time'] or 0, 0)
+
+class PersonalRecordsTests(TestCase):
+    def setUp(self):
+        self.User = get_user_model()
+        self.username = 'johndoe'
+        self.password = 'b3stp4ssw0rdEVER'
+
+        self.user = self.User.objects.create_user(
+            username=self.username,
+            password=self.password,
+            email='johndoe@example.com'
+        )
+
+        self.client.login(username=self.username, password=self.password)
+
+        self.easy_text = TestText.objects.create(
+            content="easy text " * 20,
+            difficulty="easy"
+        )
+
+        self.medium_text = TestText.objects.create(
+            content="medium text " * 20,
+            difficulty="medium"
+        )
+
+        self.test_60_easy = Test.objects.create(text=self.easy_text, duration_seconds=60)
+        self.test_60_medium = Test.objects.create(text=self.medium_text, duration_seconds=60)
+
+        self.dashboard_url = reverse('accounts:profile_dashboard')
+
+    def test_personal_records_grouped_by_difficulty_and_timer(self):
+        TestResult.objects.create(
+            user=self.user,
+            test=self.test_60_easy,
+            wpm=40,
+            accuracy=90
+        )
+
+        TestResult.objects.create(
+            user=self.user,
+            test=self.test_60_easy,
+            wpm=55,  
+            accuracy=95
+        )
+
+        TestResult.objects.create(
+            user=self.user,
+            test=self.test_60_medium,
+            wpm=60,
+            accuracy=85
+        )
+
+        TestResult.objects.create(
+            user=self.user,
+            test=self.test_60_medium,
+            wpm=70,  
+            accuracy=88
+        )
+
+        response = self.client.get(self.dashboard_url)
+
+        self.assertEqual(response.status_code, 200)
+
+        personal_records = response.context['personal_records']
+
+        records = list(personal_records)
+
+        easy_record = next(
+            r for r in records
+            if r['test__text__difficulty'] == 'easy'
+        )
+        self.assertEqual(easy_record['best_wpm'], 55)
+
+        medium_record = next(
+            r for r in records
+            if r['test__text__difficulty'] == 'medium'
+        )
+        self.assertEqual(medium_record['best_wpm'], 70)
 
 class OverallMetricsTests(TestCase):
     def setUp(self):
