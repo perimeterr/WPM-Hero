@@ -28,39 +28,6 @@
                 </div>
             </div>
         </div>
-
-        {% if user.is_authenticated %}
-        <div class="results-card results-card--previous">
-            {% if previous_results %}
-                <div class="results-table-wrap">
-                    <table class="results-table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Difficulty</th>
-                                <th>Time</th>
-                                <th>WPM</th>
-                                <th>Accuracy</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for result in previous_results %}
-                                <tr>
-                                    <td>{{ result.date_taken }}</td>
-                                    <td>{{ result.test.text.difficulty }}</td>
-                                    <td>{{ result.test.duration_seconds }}s</td>
-                                    <td>{{ result.wpm }}</td>
-                                    <td>{{ result.accuracy }}%</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <p class="results-empty-state">No previous results yet.</p>
-            {% endif %}
-        </div>
-        {% endif %}
     </div>
 {% endblock %}
 
