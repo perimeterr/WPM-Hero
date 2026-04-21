@@ -39,8 +39,8 @@ body {
 }
 
 a {
-  text-decoration: none;
-  color: inherit;
+    text-decoration: none;
+    color: inherit;
 }
 
 #logo-hero {
@@ -287,6 +287,13 @@ a {
     }
 }
 
+.section { 
+    display: flex; 
+    flex-direction: 
+    column; 
+    gap: 10px; 
+}
+
 .section-label { 
     font-size: 11px; 
     font-weight: 500; 
@@ -299,14 +306,14 @@ a {
 .stats-row { 
     display: grid; 
     grid-template-columns: 
-    repeat(6, 1fr); gap: 2px; 
+    repeat(6, 1fr); gap: 12px; 
 }
 
 .stat-card { 
     background: var(--surface2); 
     border-radius: var(--radius); 
-    width: 8em;
-    height: 60px;
+    width: 8.5em;
+    height: 3em;
     padding: 10px 20px; 
     border: 0.5px solid var(--border); 
     position: relative; 
@@ -318,9 +325,9 @@ a {
     margin-bottom: 6px; 
 }
 
-.stat-value-container{
+.stat-label-container{
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 12px;
 }
 
@@ -360,5 +367,6 @@ a {
 .inline-select option { 
     background: #2f2c2d; 
 }
+
 
 

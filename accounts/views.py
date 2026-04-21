@@ -76,12 +76,9 @@ def profile_dashboard(request):
         total_time=Sum('test__duration_seconds')
     )
 
-    time_filter = request.GET.get('time-filter', 'seconds')
-    actual_time = time_data['total_time'] or 0
-    if time_filter == 'minutes':
-        actual_time = round(actual_time/60, 2)
-    elif time_filter == 'hours':
-        actual_time = round (actual_time/3600, 2)
+    
+    actual_time = time_data['total_time']
+
 
     last_test = test_results.order_by('-date_taken').first()
 
@@ -110,7 +107,6 @@ def profile_dashboard(request):
     ctx = {
         'tests_count': tests_count,
         'total_time': actual_time,
-        'selected_time_filter': time_filter,
         'personal_records': personal_records,
         'overall_metrics': overall_metrics,
         'progress_data_dates': progress_data_dates,
