@@ -17,7 +17,8 @@
         </div>
         <div class="settings-panel">
             <div class="setting">
-                <label>Difficulty:</label>
+                <label class="stat-label">Difficulty:</label>
+                <br/>
                 <select class="inline-select" id="difficulty-select">
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
@@ -25,7 +26,8 @@
                 </select>
             </div>
             <div class="setting">
-                <label>Timer:</label>
+                <label class="stat-label">Timer:</label>
+                <br/>
                 <select class="inline-select" id="timer-select">
                     <option value="60">60</option>
                     <option value="30">30</option>
@@ -34,7 +36,8 @@
             </div>
             {% if user.is_authenticated %}
             <div class="setting">
-                <label>Custom Text:</label>
+                <label class="stat-label">Custom Text:</label>
+                <br/>
                 <select class="inline-select" id="custom-text-select">
                     <option value="">None</option>
                 </select>
