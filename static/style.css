@@ -562,3 +562,20 @@ kbd-wrap{
     margin-top:3px;
 }
 
+.hlink { 
+    padding: 7px 16px; 
+    border-radius: 999px; 
+    font-size: 13px; 
+    font-weight: 500; 
+    cursor: pointer; 
+    border: 0.5px solid var(--border); 
+    color: var(--muted); 
+    background: transparent; 
+    transition: background .15s, color .15s; 
+}
+
+.hlink:hover { 
+    background: rgba(255,255,255,0.07); 
+    color: #fff; 
+}
+
