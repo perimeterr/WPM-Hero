@@ -1,5 +1,5 @@
 import { getWordsPerMinute } from './wpm_calculation.js';
-import { getCorrectIndicesSize, getRealTimeAccuracy, resetAccuracy, getMistypedKeys } from './accuracy_calculation.js';
+import { getCorrectIndicesSize, getRealTimeAccuracy, resetAccuracy, getMistypedKeys, getCorrectKeys } from './accuracy_calculation.js';
 import { getTestStartTime, getTimeLeft, setTimer, setTimerStarted, isTimerStarted, startTimer } from './timer.js';
 import { validateCharacter, resetDisplayTextColor } from './character_validator.js';
 
@@ -11,9 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const wordsPerMinuteDisplay = document.getElementById("wpm");
     const accuracyDisplay = document.getElementById("accuracy");
     const timeDisplay = document.getElementById("time");
-    const timer = document.getElementById("timer");
-
-    let currentLine = 0;
+    const timer = document.getElementById("timer-select");
 
     typingWrapper.addEventListener('click', () => typingInput.focus());
 
@@ -21,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (localStorage.getItem('clickedReplay') === 'true') {
             const savedSettings = JSON.parse(localStorage.getItem('testSettings'));
             if (savedSettings) {
-                document.getElementById('difficulty').value = savedSettings.difficulty;
+                document.getElementById('difficulty-select').value = savedSettings.difficulty;
                 timer.value = savedSettings.timer;
                 setTimer(timer.value);
                 timeDisplay.textContent = getTimeLeft();
@@ -56,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetTest() {
-        currentLine = 0; 
         if (textContent) {
             textContent.style.transform = `translateY(0px)`; 
         }
@@ -73,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function saveTestSettings() {
         const settings = {
-            difficulty: document.getElementById('difficulty').value,
+            difficulty: document.getElementById('difficulty-select').value,
             timer: timer.value,
             displayText: Array.from(textDisplayChars).map(char => char.textContent).join('')
         };
@@ -111,13 +108,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     const finalAccuracy = getRealTimeAccuracy();
 
                     const finalMistypedKeys = getMistypedKeys();
+                    const finalCorrectKeys = getCorrectKeys();
 
                     localStorage.setItem('finalWPM', finalWPM.toFixed(2));
                     localStorage.setItem('finalAccuracy', finalAccuracy.toFixed(2));
                     localStorage.setItem('finalMistypedKeys', JSON.stringify(finalMistypedKeys));
-                    const difficulty = document.getElementById('difficulty').value;
-                    const timerValue = document.getElementById('timer').value;
+                    localStorage.setItem('finalCorrectKeys', JSON.stringify(finalCorrectKeys));
+                    const difficulty = document.getElementById('difficulty-select').value;
+                    const timerValue = document.getElementById('timer-select').value;
 
+                    
                     window.location.href = `/results/?difficulty=${difficulty}&timer=${timerValue}`;
                 }
             );
