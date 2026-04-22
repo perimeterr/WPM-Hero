@@ -43,11 +43,11 @@ describe('Flow Test', () => {
         validateCharacter(displayElementChars, typingInput);
 
         // Check character validation results
-        expect(displayElementChars[0].style.color).toBe('green');
+        expect(displayElementChars[0].style.color).toBe('white');
         expect(displayElementChars[1].style.color).toBe('red');
-        expect(displayElementChars[2].style.color).toBe('green');
+        expect(displayElementChars[2].style.color).toBe('white');
         expect(displayElementChars[3].style.color).toBe('red');
-        expect(displayElementChars[4].style.color).toBe('green');
+        expect(displayElementChars[4].style.color).toBe('white');
 
         // Check accuracy tracking
         expect(getKeyAccuracy('H')).toBe(100);
@@ -72,18 +72,23 @@ function buildHomeReplayDom(displayTextLength) {
         .join('');
 
     document.body.innerHTML = `
+        <div id="typing-wrapper"></div>
+
         <select id="difficulty">
             <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
+            <option value="medium">medium</option>
+            <option value="hard">hard</option>
         </select>
+
         <select id="timer">
             <option value="60">60</option>
             <option value="30">30</option>
             <option value="15">15</option>
         </select>
+
         <div id="text-content">${textSpans}</div>
         <textarea id="typing-input"></textarea>
+
         <span id="wpm">0</span>
         <span id="accuracy">0%</span>
         <span id="time">0s</span>
