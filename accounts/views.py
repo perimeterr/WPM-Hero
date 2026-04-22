@@ -77,9 +77,7 @@ def profile_dashboard(request):
         total_time=Sum('test__duration_seconds')
     )
 
-    
     actual_time = time_data['total_time']
-
 
     last_test = test_results.order_by('-date_taken').first()
 

@@ -63,6 +63,10 @@ export function getMistypedKeys() {
     return mistypedKeys;
 }
 
+export function getCorrectKeys() {
+    return correctKeys;
+}
+
 export function resetAccuracy() {
     for (let key in mistypedKeys) {
         mistypedKeys[key] = 0;
