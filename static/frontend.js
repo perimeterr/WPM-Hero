@@ -8,9 +8,19 @@ const rows = [
 [{k:'shift',l:'shift',w:'wide-28'},{k:'z',l:'Z'},{k:'x',l:'X'},{k:'c',l:'C'},{k:'v',l:'V'},{k:'b',l:'B'},{k:'n',l:'N'},{k:'m',l:'M'},{k:',',l:','},{k:'.',l:'.'},{k:'/',l:'/'},{k:'shift',l:'shift',w:'wide-28'}],
 [{k:'space',l:'space',w:'wide-65'}]];
 
+let timeDisplayEl;
+
 document.addEventListener('DOMContentLoaded', () => {
     const chartCanvas = document.getElementById('progressChart');
 
+    timeDisplayEl = document.getElementById('time-display');
+    const timeSelect = document.getElementById('stat-time-select');
+
+    if (timeSelect) {
+        timeSelect.addEventListener('change', () => {
+            updateTime(timeSelect.value);
+        });
+    }
 
     if (chartCanvas) {
         const labels = JSON.parse(document.getElementById('progress-data-dates').textContent);
@@ -82,11 +92,26 @@ document.addEventListener('DOMContentLoaded', () => {
     renderLegend('legend-bar');
 });
 
-// export function updateTime(id, v) {
-//     const base = 11520;
-//     const val = v==='hours' ? (base/3600).toFixed(1) : v==='minutes' ? Math.round(base/60) : base;
-//     const suffix = v==='hours' ? 'hrs' : v==='minutes' ? 'min' : 's';
-//     document.getElementById(id).innerHTML = val + '<span class="stat-suffix">' + suffix + '</span>';
-// }
+export function updateTime(v) {
+    if (!timeDisplayEl) return;
+
+    const base = parseInt(timeDisplayEl.dataset.seconds); 
+    
+    let val, suffix;
+
+    if (v === 'hours') {
+        val = (base / 3600).toFixed(1);
+        suffix = 'hrs';
+    } else if (v === 'minutes') {
+        val = Math.round(base / 60);
+        suffix = 'min';
+    } else {
+        // Default to Seconds
+        val = base;
+        suffix = 's';
+    }
+    
+    timeDisplayEl.innerHTML = `${val}<span class="stat-suffix">${suffix}</span>`;
+}
 
 

@@ -16,13 +16,13 @@
             <div class="stat-card">
                 <div class="stat-label-container">
                     <div class="stat-label">Total Time Spent</div>
-                    <select class="inline-select" onchange="updateTime(this.id,this.value)">
-                        <option value="hours" selected>Hours</option>
+                    <select id="stat-time-select" class="inline-select">
+                        <option value="seconds" selected>Seconds</option>
                         <option value="minutes">Minutes</option>
-                        <option value="seconds">Seconds</option>
+                        <option value="hours">Hours</option>
                     </select>
                 </div>
-                <div class="stat-value" id="time-display">{{ total_time }}<span class="stat-suffix">hrs</span></div>
+                <div class="stat-value" id="time-display" data-seconds="{{ total_time }}">{{ total_time }}<span class="stat-suffix">s</span></div>
                 <div class="stat-accent"></div>
             </div>
             <div class="stat-card">
