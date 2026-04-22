@@ -1,61 +1,52 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block title %}WPM Hero{% endblock %}
-
 {% block content %}
+    {{ all_texts|json_script:"all-texts-data" }}
+    {{ custom_texts|json_script:"custom-texts-data" }}
+
     <main>
         <div class="top-panel">
-            
             <div class="panel-wpm">
-                <p><span id="wpm">0</span> wpm</p>
+                <p><span id="wpm">0.00</span> wpm</p>
             </div>
-            
-            <div class="timer"><span id="time">0s</span></div>
+            <div class="timer"><span id="time">60</span></div>
             <div class="panel-accuracy">
-                <span id="accuracy">0%</span>
+                <span id="accuracy">100.00</span>%
             </div>
-            
-            
         </div>
         <div class="settings-panel">
-            <form method="GET">
+            <div class="setting">
                 <label>Difficulty:</label>
-                <select class="inline-select" id="difficulty" name="difficulty" onchange="this.form.submit()">
-                    <option value="easy" {% if test_text.difficulty == "easy" %}selected{% endif %}>Easy</option>
-                    <option value="medium" {% if test_text.difficulty == "medium" %}selected{% endif %}>Medium</option>
-                    <option value="hard" {% if test_text.difficulty == "hard" %}selected{% endif %}>Hard</option>
+                <select class="inline-select" id="difficulty-select">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
                 </select>
+            </div>
+            <div class="setting">
                 <label>Timer:</label>
-                <select class="inline-select" id="timer" name="timer" onchange="this.form.submit()">
-                    <option value="60" {% if test_timer.selected_timer == "60" %}selected{% endif %}>60</option>
-                    <option value="30" {% if test_timer.selected_timer == "30" %}selected{% endif %}>30</option>
-                    <option value="15" {% if test_timer.selected_timer == "15" %}selected{% endif %}>15</option>
+                <select class="inline-select" id="timer-select">
+                    <option value="60">60</option>
+                    <option value="30">30</option>
+                    <option value="15">15</option>
                 </select>
-                {% if user.is_authenticated %}
+            </div>
+            {% if user.is_authenticated %}
+            <div class="setting">
                 <label>Custom Text:</label>
-                <select class="inline-select" id="custom-text" name="custom-text" onchange="this.form.submit()">
+                <select class="inline-select" id="custom-text-select">
                     <option value="">None</option>
-                    {% for text in test_text.all_custom_texts %}
-                    <option value="{{ text.id }}">{{ text.content|truncatechars:30 }}</option>
-                    {% endfor %}
                 </select>
-                {% endif %}
-            </form>
+            </div>
+            {% endif %}
         </div>
-        
     </main>
-    
     <div id="typing-wrapper">
         <input type="text" id="typing-input" autofocus />
-        <div id="text-content" class="text-display">
-        {% for char in test_text.display_text %}
-            <span class="char">{% if char == " " %}&nbsp;{% else %}{{ char }}{% endif %}</span>
-        {% endfor %}
+        <div id="text-content" class="text-display"></div>
     </div>
-    
 {% endblock %}
-
 {% block extra_js %}
     <script type="module" src="{% static 'script.js' %}"></script>
 {% endblock %}

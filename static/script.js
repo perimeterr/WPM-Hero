@@ -6,41 +6,48 @@ import { validateCharacter, resetDisplayTextColor } from './character_validator.
 document.addEventListener('DOMContentLoaded', () => {
     const typingWrapper = document.getElementById('typing-wrapper');
     const textContent = document.getElementById('text-content');
-    const textDisplayChars = document.querySelectorAll('.char');
     const typingInput = document.getElementById('typing-input');
     const wordsPerMinuteDisplay = document.getElementById("wpm");
     const accuracyDisplay = document.getElementById("accuracy");
     const timeDisplay = document.getElementById("time");
-    const timer = document.getElementById("timer-select");
+    const difficultySelect = document.getElementById("difficulty-select");
+    const timerSelect = document.getElementById("timer-select");
+    const customTextSelect = document.getElementById("custom-text-select");
 
-    typingWrapper.addEventListener('click', () => typingInput.focus());
+    // Load text data passed from Django
+    const allTexts = JSON.parse(document.getElementById('all-texts-data').textContent);
+    const customTexts = JSON.parse(document.getElementById('custom-texts-data')?.textContent || '[]');
 
-    function initializeTest() {
-        if (localStorage.getItem('clickedReplay') === 'true') {
-            const savedSettings = JSON.parse(localStorage.getItem('testSettings'));
-            if (savedSettings) {
-                document.getElementById('difficulty-select').value = savedSettings.difficulty;
-                timer.value = savedSettings.timer;
-                setTimer(timer.value);
-                timeDisplay.textContent = getTimeLeft();
-                accuracyDisplay.textContent = "100.00";
-                wordsPerMinuteDisplay.textContent = "0.00";
-                
-                // Restore display text
-                textDisplayChars.forEach((char, index) => {
-                    char.textContent = savedSettings.displayText[index] || '';
-                });
-            }
-        } else {
-            resetTest();
-        }
-        setTimer(timer.value);
-        timeDisplay.textContent = getTimeLeft();
-        accuracyDisplay.textContent = "100.00";
-        wordsPerMinuteDisplay.textContent = "0.00";
+    // Populate custom text dropdown
+    if (customTextSelect && customTexts.length > 0) {
+        customTexts.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.id;
+            opt.textContent = t.content.substring(0, 30) + '...';
+            customTextSelect.appendChild(opt);
+        });
     }
-    
-    
+
+    function getRandomText(difficulty) {
+        const texts = allTexts[difficulty];
+        if (!texts || texts.length === 0) return "No text available for this difficulty.";
+        return texts[Math.floor(Math.random() * texts.length)].content;
+    }
+
+    function renderText(text) {
+        textContent.innerHTML = '';
+        text.split('').forEach(char => {
+            const span = document.createElement('span');
+            span.className = 'char';
+            span.textContent = char === ' ' ? '\u00A0' : char;
+            textContent.appendChild(span);
+        });
+    }
+
+    function getTextDisplayChars() {
+        return document.querySelectorAll('.char');
+    }
+
     function updateTimeDisplay(time) {
         timeDisplay.textContent = time;
     }
@@ -53,11 +60,38 @@ document.addEventListener('DOMContentLoaded', () => {
         accuracyDisplay.textContent = accuracy.toFixed(2);
     }
 
-    function resetTest() {
-        if (textContent) {
-            textContent.style.transform = `translateY(0px)`; 
+    function saveTestSettings() {
+        const settings = {
+            difficulty: difficultySelect.value,
+            timer: timerSelect.value,
+            text: textContent.innerText
+        };
+        localStorage.setItem('testSettings', JSON.stringify(settings));
+    }
+
+    function initializeTest() {
+        const difficulty = difficultySelect.value;
+        const timerValue = timerSelect.value;
+
+        if (localStorage.getItem('clickedReplay') === 'true') {
+            const savedSettings = JSON.parse(localStorage.getItem('testSettings'));
+            if (savedSettings) {
+                difficultySelect.value = savedSettings.difficulty;
+                timerSelect.value = savedSettings.timer;
+                renderText(savedSettings.text);
+            }
+            localStorage.removeItem('clickedReplay');
+        } else {
+            const customId = customTextSelect?.value;
+            if (customId) {
+                const custom = customTexts.find(t => t.id == customId);
+                renderText(custom ? custom.content : getRandomText(difficulty));
+            } else {
+                renderText(getRandomText(difficulty));
+            }
         }
-        setTimer(timer.value);
+
+        setTimer(timerSelect.value);
         setTimerStarted(false);
         typingInput.disabled = false;
         typingInput.value = "";
@@ -65,48 +99,34 @@ document.addEventListener('DOMContentLoaded', () => {
         updateWPMDisplay(0);
         updateAccuracyDisplay(100);
         resetAccuracy();
-        resetDisplayTextColor(textDisplayChars);
-    }
-    
-    function saveTestSettings() {
-        const settings = {
-            difficulty: document.getElementById('difficulty-select').value,
-            timer: timer.value,
-            displayText: Array.from(textDisplayChars).map(char => char.textContent).join('')
-        };
-        localStorage.setItem('testSettings', JSON.stringify(settings));
+        resetDisplayTextColor(getTextDisplayChars());
     }
 
-    initializeTest();
+    // Re-initialize when settings change
+    difficultySelect.addEventListener('change', initializeTest);
+    timerSelect.addEventListener('change', initializeTest);
+    if (customTextSelect) {
+        customTextSelect.addEventListener('change', initializeTest);
+    }
 
-    timer.addEventListener("change", () => {
-        setTimer(timer.value);
-        updateTimeDisplay(timer.value);
-    }); 
-
-    
+    typingWrapper.addEventListener('click', () => typingInput.focus());
 
     typingInput.addEventListener('input', () => {
+        const textDisplayChars = getTextDisplayChars();
+
         if (!isTimerStarted() && typingInput.value.length > 0) {
             saveTestSettings();
-            startTimer( (timeLeft) => {
-                    const wpm = getWordsPerMinute(getCorrectIndicesSize(), getTestStartTime());
-                    const accuracy = getRealTimeAccuracy();
+            startTimer(
+                (timeLeft) => {
                     updateTimeDisplay(timeLeft);
-                    updateWPMDisplay(wpm);
-                    updateAccuracyDisplay(accuracy);
+                    updateWPMDisplay(getWordsPerMinute(getCorrectIndicesSize(), getTestStartTime()));
+                    updateAccuracyDisplay(getRealTimeAccuracy());
                 },
                 () => {
                     typingInput.disabled = true;
 
-                    // get final wpm and accuracy when timer ends
-                    const finalWPM = getWordsPerMinute(
-                        getCorrectIndicesSize(),
-                        getTestStartTime()
-                    );
-                
+                    const finalWPM = getWordsPerMinute(getCorrectIndicesSize(), getTestStartTime());
                     const finalAccuracy = getRealTimeAccuracy();
-
                     const finalMistypedKeys = getMistypedKeys();
                     const finalCorrectKeys = getCorrectKeys();
 
@@ -114,14 +134,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('finalAccuracy', finalAccuracy.toFixed(2));
                     localStorage.setItem('finalMistypedKeys', JSON.stringify(finalMistypedKeys));
                     localStorage.setItem('finalCorrectKeys', JSON.stringify(finalCorrectKeys));
-                    const difficulty = document.getElementById('difficulty-select').value;
-                    const timerValue = document.getElementById('timer-select').value;
 
-                    
-                    window.location.href = `/results/?difficulty=${difficulty}&timer=${timerValue}`;
+                    setTimeout(() => {
+                        window.location.href = `/results/?difficulty=${difficultySelect.value}&timer=${timerSelect.value}`;
+                    }, 50);
                 }
             );
         }
+
         validateCharacter(textDisplayChars, typingInput);
 
         const currentIndex = typingInput.value.length;
@@ -130,22 +150,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentCharEl) {
             const actualLineHeight = currentCharEl.offsetHeight;
             const charTop = currentCharEl.offsetTop;
-            
             const lineIndex = Math.floor(charTop / actualLineHeight);
-
             const currentBlock = Math.floor(lineIndex / 3);
             const scrollOffset = currentBlock * (actualLineHeight * 3);
-
             textContent.style.transform = `translateY(-${scrollOffset}px)`;
         }
-        
-        // Update WPM and accuracy in real-time as user types
+
         if (isTimerStarted()) {
-            const wpm = getWordsPerMinute(getCorrectIndicesSize(), getTestStartTime());
-            const accuracy = getRealTimeAccuracy();
-            wordsPerMinuteDisplay.textContent = wpm.toFixed(2);
-            accuracyDisplay.textContent = accuracy.toFixed(2);
+            updateWPMDisplay(getWordsPerMinute(getCorrectIndicesSize(), getTestStartTime()));
+            updateAccuracyDisplay(getRealTimeAccuracy());
         }
     });
-});
 
+    initializeTest();
+});
