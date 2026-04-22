@@ -14,17 +14,29 @@ document.addEventListener('DOMContentLoaded', () => {
     const timerSelect = document.getElementById("timer-select");
     const customTextSelect = document.getElementById("custom-text-select");
 
-    // Load text data passed from Django
     const allTexts = JSON.parse(document.getElementById('all-texts-data').textContent);
     const customTexts = JSON.parse(document.getElementById('custom-texts-data')?.textContent || '[]');
 
-    // Populate custom text dropdown
     if (customTextSelect && customTexts.length > 0) {
         customTexts.forEach(t => {
             const opt = document.createElement('option');
             opt.value = t.id;
             opt.textContent = t.content.substring(0, 30) + '...';
+            opt.dataset.difficulty = t.difficulty;
             customTextSelect.appendChild(opt);
+        });
+    }
+
+    if (customTextSelect) {
+    customTextSelect.addEventListener('change', () => {
+            const selectedOption = customTextSelect.options[customTextSelect.selectedIndex];
+            const difficulty = selectedOption.dataset.difficulty;
+
+            if (difficulty) {
+                difficultySelect.value = difficulty; // sync the difficulty dropdown
+            }
+
+            initializeTest();
         });
     }
 

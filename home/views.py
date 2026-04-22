@@ -9,7 +9,7 @@ def home(request):
     easy_texts = list(TestText.objects.filter(difficulty='easy', created_by__isnull=True).values('id', 'content'))
     medium_texts = list(TestText.objects.filter(difficulty='medium', created_by__isnull=True).values('id', 'content'))
     hard_texts = list(TestText.objects.filter(difficulty='hard', created_by__isnull=True).values('id', 'content'))
-    custom_texts = list(TestText.objects.filter(created_by=request.user).values('id', 'content')) if request.user.is_authenticated else []
+    custom_texts = list(TestText.objects.filter(created_by=request.user).values('id', 'content', 'difficulty')) if request.user.is_authenticated else []
 
     ctx = {
         'all_texts': {
